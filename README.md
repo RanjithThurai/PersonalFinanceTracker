@@ -86,3 +86,4 @@ You must have the following software installed on your machine:
       The application should open automatically in your browser at `http://localhost:3000`.
 
 You can now sign up for a new account and begin using the application!
+# minor update
