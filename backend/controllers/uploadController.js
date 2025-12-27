@@ -1,5 +1,4 @@
 const Tesseract = require('tesseract.js');
-// We remove the pdfjs-dist import from here and import it dynamically later
 const { createCanvas } = require('canvas');
 
 // Helper function to parse text, same as before
@@ -87,6 +86,13 @@ exports.scanReceipt = async (req, res) => {
 
   } catch (error) {
     console.error('File Processing Error:', error);
-    res.status(500).json({ msg: 'Failed to process the file.', error: error.message });
+    
+    // Handle file type errors
+    if (error.message && error.message.includes('Invalid file type')) {
+      return res.status(400).json({ msg: error.message });
+    }
+    
+    // Generic error response (don't expose internal error details)
+    res.status(500).json({ msg: 'Failed to process the file. Please try again.' });
   }
 };

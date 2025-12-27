@@ -7,6 +7,8 @@ const TransactionSchema = new mongoose.Schema({
   category: { type: String, required: true },
   date: { type: Date, required: true },
   description: { type: String },
+}, {
+  timestamps: true // This automatically adds createdAt and updatedAt fields
 });
 
 module.exports = mongoose.model('Transaction', TransactionSchema);

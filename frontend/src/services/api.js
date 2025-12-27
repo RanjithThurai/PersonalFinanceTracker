@@ -13,6 +13,22 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Response interceptor to handle 401 errors (unauthorized/expired token)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Token is invalid or expired, remove it and redirect to login
+      localStorage.removeItem('token');
+      // Only redirect if we're not already on the login page
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // --- ADD THIS NEW FUNCTION ---
 // Function to upload a receipt file
 export const uploadReceipt = (file) => {

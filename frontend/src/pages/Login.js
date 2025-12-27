@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/api'; // Import the real API function
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('user@example.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

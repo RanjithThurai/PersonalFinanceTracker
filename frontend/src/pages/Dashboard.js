@@ -42,8 +42,8 @@ useEffect(() => {
   const handleAddTransaction = async (transaction) => {
     try {
       const response = await createTransaction(transaction);
-      // Add the new transaction from the response to our state
-      setTransactions(prevTransactions => [...prevTransactions, response.data]);
+      // Add the new transaction at the beginning of the list (newest first)
+      setTransactions(prevTransactions => [response.data, ...prevTransactions]);
       setExtractedAmount(null); // Clear the extracted amount after use
       setActiveView('list'); // Switch back to the list view after adding
     } catch (error) {

@@ -73,7 +73,14 @@ const SummaryCharts = ({ transactions }) => {
     plugins: {
       legend: { position: 'top' },
       title: { display: true, text: 'Total Income vs. Expense' },
-      tooltip: { callbacks: { label: (context) => `₹${context.raw.toFixed(2)}` } }
+      tooltip: { 
+        callbacks: { 
+          label: (context) => {
+            const value = typeof context.raw === 'number' ? context.raw : 0;
+            return `₹${value.toFixed(2)}`;
+          }
+        } 
+      }
     },
     scales: { y: { beginAtZero: true, ticks: { callback: (value) => `₹${value}` } } }
   };
@@ -99,7 +106,14 @@ const SummaryCharts = ({ transactions }) => {
     plugins: {
       legend: { display: false },
       title: { display: true, text: 'Spending by Category (in ₹)' },
-      tooltip: { callbacks: { label: (context) => `₹${context.raw.toFixed(2)}` } }
+      tooltip: { 
+        callbacks: { 
+          label: (context) => {
+            const value = typeof context.raw === 'number' ? context.raw : 0;
+            return `₹${value.toFixed(2)}`;
+          }
+        } 
+      }
     },
     scales: { x: { beginAtZero: true, ticks: { callback: (value) => `₹${value}` } } }
   };
