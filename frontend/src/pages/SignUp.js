@@ -28,7 +28,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="card" style={{ maxWidth: '500px', margin: 'auto' }}>
+    <div className="card signup-card">
       <h2>Create an Account</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

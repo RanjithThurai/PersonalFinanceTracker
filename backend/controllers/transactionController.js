@@ -25,7 +25,7 @@ exports.getTransactions = async (req, res) => {
 
     const total = await Transaction.countDocuments(queryObj);
     const transactions = await Transaction.find(queryObj)
-      .sort({ createdAt: -1 }) // Sort by creation date (newest first)
+      .sort({ _id: -1 }) // Sort by _id descending (newest first) - ObjectIds contain timestamp
       .skip(startIndex)
       .limit(limit);
 

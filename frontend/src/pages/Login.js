@@ -29,7 +29,7 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="card" style={{ maxWidth: '500px', margin: 'auto' }}>
+    <div className="card login-card">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
