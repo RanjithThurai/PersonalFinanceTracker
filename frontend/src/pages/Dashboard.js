@@ -169,7 +169,7 @@ const Dashboard = () => {
       case 'budgets':
         return <BudgetManager />;
       case 'upload':
-        return <ReceiptUpload onAmountExtracted={handleAmountExtracted} onTransactionAdded={handleTransactionAdded} />;
+        return <ReceiptUpload onReceiptScanned={handleAmountExtracted} onTransactionAdded={handleTransactionAdded} />;
       default:
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
     }
