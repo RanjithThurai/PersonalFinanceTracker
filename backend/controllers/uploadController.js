@@ -1,70 +1,203 @@
 const Tesseract = require('tesseract.js');
-const { createCanvas } = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 
-// Helper function to extract numbers from text (handles commas, decimals, currency)
+// Enhanced image preprocessing to improve OCR accuracy
+const preprocessImage = async (imageBuffer) => {
+  try {
+    const img = await loadImage(imageBuffer);
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext('2d');
+    
+    // Draw original image
+    ctx.drawImage(img, 0, 0);
+    
+    // Get image data for manipulation
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    // Apply image enhancements for better OCR
+    // 1. Increase contrast
+    // 2. Convert to grayscale (optional, but can help)
+    // 3. Normalize brightness
+    
+    // Contrast enhancement factor (1.5 = 50% more contrast)
+    const contrastFactor = 1.5;
+    const factor = (259 * (contrastFactor * 255 + 255)) / (255 * (259 - contrastFactor * 255));
+    
+    for (let i = 0; i < data.length; i += 4) {
+      // Apply contrast
+      data[i] = Math.max(0, Math.min(255, factor * (data[i] - 128) + 128));     // R
+      data[i + 1] = Math.max(0, Math.min(255, factor * (data[i + 1] - 128) + 128)); // G
+      data[i + 2] = Math.max(0, Math.min(255, factor * (data[i + 2] - 128) + 128)); // B
+      
+      // Optional: Convert to grayscale for better OCR (uncomment if needed)
+      // const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      // data[i] = gray;
+      // data[i + 1] = gray;
+      // data[i + 2] = gray;
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+    
+    return canvas.toBuffer('image/png');
+  } catch (error) {
+    console.log('Image preprocessing failed, using original:', error.message);
+    return imageBuffer; // Return original if preprocessing fails
+  }
+};
+
+// Enhanced number extraction with better regex patterns
 const extractNumber = (text) => {
-  // Remove currency symbols and common text, keep numbers, dots, and commas
-  const cleaned = text.replace(/[₹$€£¥]/g, '').trim();
+  if (!text || typeof text !== 'string') return null;
   
-  // Match numbers with optional commas and decimals
-  // Patterns: 123.45, 1,234.56, 1234, 123.5, etc.
+  // Remove currency symbols (expanded list) but keep numbers, commas, and decimals
+  const cleaned = text.replace(/[₹$€£¥Rs]/g, '').trim();
+  
+  // Enhanced patterns to match various number formats
   const patterns = [
-    /(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)/,  // With commas: 1,234.56
-    /(\d+\.\d{1,2})/,                       // Decimal: 123.45
-    /(\d+)/                                 // Integer: 1234
+    // Pattern 1: Numbers with commas and decimals (1,234.56, 12,345.67)
+    /(\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?)/,
+    // Pattern 2: Numbers with decimals (123.45, 1234.56)
+    /(\d{4,}(?:\.\d{1,2})?)/,
+    // Pattern 3: Standard decimal numbers (123.45, 99.99)
+    /(\d{2,}\.\d{1,2})/,
+    // Pattern 4: Integer numbers (1234, 5678)
+    /(\d{3,})/,
+    // Pattern 5: Any number with decimal (fallback)
+    /(\d+\.\d{1,2})/,
+    // Pattern 6: Any integer (fallback)
+    /(\d+)/,
   ];
   
+  const extractedNumbers = [];
+  
   for (const pattern of patterns) {
-    const match = cleaned.match(pattern);
-    if (match) {
-      // Remove commas and parse
-      const numStr = match[1].replace(/,/g, '');
+    const matches = cleaned.match(pattern);
+    if (matches) {
+      const numStr = matches[1].replace(/,/g, '');
       const num = parseFloat(numStr);
-      if (!isNaN(num) && num > 0) {
-        return num;
+      if (!isNaN(num) && num > 0 && num < 10000000) { // Reasonable upper limit
+        extractedNumbers.push(num);
       }
     }
   }
+  
+  // Return the largest valid number found (most likely the total)
+  if (extractedNumbers.length > 0) {
+    return Math.max(...extractedNumbers);
+  }
+  
   return null;
 };
 
-// Helper function to parse receipt text with improved logic
+// Extract all numbers from a line for better matching
+const extractAllNumbers = (text) => {
+  const numbers = [];
+  // Remove currency symbols but keep numbers, commas, decimals, and spaces for pattern matching
+  const cleaned = text.replace(/[₹$€£¥Rs]/g, '').trim();
+  
+  // Find all number patterns
+  const patterns = [
+    /(\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?)/g,
+    /(\d{4,}(?:\.\d{1,2})?)/g,
+    /(\d{2,}\.\d{1,2})/g,
+    /(\d{3,})/g,
+  ];
+  
+  for (const pattern of patterns) {
+    const matches = [...cleaned.matchAll(pattern)];
+    for (const match of matches) {
+      const numStr = match[1].replace(/,/g, '');
+      const num = parseFloat(numStr);
+      if (!isNaN(num) && num > 0 && num < 10000000) {
+        numbers.push(num);
+      }
+    }
+  }
+  
+  return [...new Set(numbers)]; // Remove duplicates
+};
+
+// Enhanced receipt parsing with position-aware logic
 const parseReceipt = (text) => {
   const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   let candidates = [];
+  const totalLines = lines.length;
   
-  // Keywords in priority order (most important first)
-  const totalKeywords = ['grand total', 'total amount', 'amount due', 'total', 'final total', 'balance due'];
-  const subtotalKeywords = ['subtotal', 'sub-total', 'sub total'];
-  const amountKeywords = ['amount', 'balance', 'due', 'pay', 'charge'];
+  // Enhanced keyword lists with more variations
+  const totalKeywords = [
+    'grand total', 'grandtotal', 'grand-total',
+    'total amount', 'totalamount', 'total-amount',
+    'amount due', 'amountdue', 'amount-due',
+    'final total', 'finaltotal', 'final-total',
+    'balance due', 'balancedue', 'balance-due',
+    'total', 'tot', 'ttl',
+    'amount payable', 'amountpayable',
+    'payable amount', 'payableamount'
+  ];
   
-  // First pass: Look for "total" keywords (highest priority)
+  const subtotalKeywords = [
+    'subtotal', 'sub-total', 'sub total', 'subtotal:',
+    'sub-total:', 'sub total:', 'sub-total:'
+  ];
+  
+  const amountKeywords = [
+    'amount', 'balance', 'due', 'pay', 'charge',
+    'total:', 'amount:', 'balance:', 'due:'
+  ];
+  
+  // Calculate position score (lines near the end get higher scores)
+  const getPositionScore = (lineIndex) => {
+    const position = (totalLines - lineIndex) / totalLines; // 0 to 1, higher = closer to end
+    return position * 2; // Max 2 points for position
+  };
+  
+  // First pass: Look for "total" keywords with position awareness
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const lowerLine = line.toLowerCase();
+    const lowerLine = line.toLowerCase().replace(/[:\-]/g, ' '); // Normalize separators
+    const positionScore = getPositionScore(i);
     
     // Check for total keywords
     for (const keyword of totalKeywords) {
       if (lowerLine.includes(keyword)) {
         // Try to extract number from same line
-        let num = extractNumber(line);
-        if (num) {
-          candidates.push({ value: num, priority: 10, line: line });
+        const numbers = extractAllNumbers(line);
+        for (const num of numbers) {
+          candidates.push({ 
+            value: num, 
+            priority: 15 + positionScore, // Higher priority with position bonus
+            line: line,
+            method: 'total-keyword',
+            lineIndex: i
+          });
         }
         
-        // Also check next line (sometimes total is on next line)
+        // Check next line (sometimes total is on next line)
         if (i + 1 < lines.length) {
-          num = extractNumber(lines[i + 1]);
-          if (num) {
-            candidates.push({ value: num, priority: 10, line: lines[i + 1] });
+          const nextNumbers = extractAllNumbers(lines[i + 1]);
+          for (const num of nextNumbers) {
+            candidates.push({ 
+              value: num, 
+              priority: 14 + positionScore,
+              line: lines[i + 1],
+              method: 'total-keyword-next-line',
+              lineIndex: i + 1
+            });
           }
         }
         
         // Check previous line
         if (i > 0) {
-          num = extractNumber(lines[i - 1]);
-          if (num) {
-            candidates.push({ value: num, priority: 9, line: lines[i - 1] });
+          const prevNumbers = extractAllNumbers(lines[i - 1]);
+          for (const num of prevNumbers) {
+            candidates.push({ 
+              value: num, 
+              priority: 13 + positionScore,
+              line: lines[i - 1],
+              method: 'total-keyword-prev-line',
+              lineIndex: i - 1
+            });
           }
         }
       }
@@ -73,92 +206,216 @@ const parseReceipt = (text) => {
     // Check for subtotal (lower priority, but still valid)
     for (const keyword of subtotalKeywords) {
       if (lowerLine.includes(keyword)) {
-        const num = extractNumber(line);
-        if (num) {
-          candidates.push({ value: num, priority: 5, line: line });
+        const numbers = extractAllNumbers(line);
+        for (const num of numbers) {
+          candidates.push({ 
+            value: num, 
+            priority: 8 + positionScore,
+            line: line,
+            method: 'subtotal-keyword',
+            lineIndex: i
+          });
         }
       }
     }
   }
   
-  // Second pass: If no total found, look for amount keywords
-  if (candidates.length === 0) {
-    for (const line of lines) {
+  // Second pass: Look for amount keywords if no good candidates
+  if (candidates.filter(c => c.priority >= 10).length === 0) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       const lowerLine = line.toLowerCase();
+      const positionScore = getPositionScore(i);
+      
       for (const keyword of amountKeywords) {
         if (lowerLine.includes(keyword)) {
-          const num = extractNumber(line);
-          if (num) {
-            candidates.push({ value: num, priority: 3, line: line });
+          const numbers = extractAllNumbers(line);
+          for (const num of numbers) {
+            candidates.push({ 
+              value: num, 
+              priority: 5 + positionScore,
+              line: line,
+              method: 'amount-keyword',
+              lineIndex: i
+            });
           }
         }
       }
     }
   }
   
-  // Third pass: If still nothing, find the largest number (might be the total)
-  if (candidates.length === 0) {
-    const allNumbers = [];
-    for (const line of lines) {
-      const num = extractNumber(line);
-      if (num && num > 0) {
-        allNumbers.push({ value: num, priority: 1, line: line });
+  // Third pass: Find numbers in last 30% of lines (receipt totals are usually at bottom)
+  if (candidates.filter(c => c.priority >= 10).length === 0) {
+    const bottomStartIndex = Math.floor(totalLines * 0.7);
+    for (let i = bottomStartIndex; i < lines.length; i++) {
+      const numbers = extractAllNumbers(lines[i]);
+      const positionScore = getPositionScore(i);
+      for (const num of numbers) {
+        candidates.push({ 
+          value: num, 
+          priority: 3 + positionScore,
+          line: lines[i],
+          method: 'bottom-region',
+          lineIndex: i
+        });
       }
-    }
-    // Sort by value and take the largest (likely the total)
-    if (allNumbers.length > 0) {
-      allNumbers.sort((a, b) => b.value - a.value);
-      candidates.push(allNumbers[0]);
     }
   }
   
-  // Sort candidates by priority (highest first), then by value (largest first)
+  // Fourth pass: If still nothing, find the largest numbers overall
+  if (candidates.length === 0) {
+    const allNumbers = [];
+    for (let i = 0; i < lines.length; i++) {
+      const numbers = extractAllNumbers(lines[i]);
+      const positionScore = getPositionScore(i);
+      for (const num of numbers) {
+        allNumbers.push({ 
+          value: num, 
+          priority: 1 + positionScore,
+          line: lines[i],
+          method: 'largest-number',
+          lineIndex: i
+        });
+      }
+    }
+    // Sort by value and take top candidates
+    if (allNumbers.length > 0) {
+      allNumbers.sort((a, b) => b.value - a.value);
+      candidates.push(...allNumbers.slice(0, 3)); // Top 3 largest
+    }
+  }
+  
+  // Remove duplicate values and keep highest priority instance
+  const uniqueCandidates = [];
+  const seenValues = new Set();
+  
+  // Sort by priority first, then value
   candidates.sort((a, b) => {
-    if (b.priority !== a.priority) {
+    if (Math.abs(b.priority - a.priority) > 0.1) {
       return b.priority - a.priority;
     }
     return b.value - a.value;
   });
   
-  const total = candidates.length > 0 ? candidates[0].value : null;
+  for (const candidate of candidates) {
+    const roundedValue = Math.round(candidate.value * 100) / 100;
+    if (!seenValues.has(roundedValue)) {
+      seenValues.add(roundedValue);
+      uniqueCandidates.push(candidate);
+    }
+  }
+  
+  // Validate the top candidate
+  let total = null;
+  if (uniqueCandidates.length > 0) {
+    const topCandidate = uniqueCandidates[0];
+    
+    // Sanity checks
+    if (topCandidate.value > 0 && 
+        topCandidate.value < 10000000 && // Reasonable upper limit
+        topCandidate.value >= 0.01) { // Minimum reasonable amount
+      total = Math.round(topCandidate.value * 100) / 100; // Round to 2 decimal places
+    }
+  }
   
   console.log('Receipt parsing results:', {
     total,
-    candidates: candidates.slice(0, 3), // Log top 3 candidates
-    textPreview: text.substring(0, 200) // First 200 chars for debugging
+    topCandidates: uniqueCandidates.slice(0, 5).map(c => ({
+      value: c.value,
+      priority: c.priority.toFixed(2),
+      method: c.method,
+      linePreview: c.line.substring(0, 50)
+    })),
+    totalLines,
+    textPreview: text.substring(0, 300)
   });
   
   return { total };
 };
 
 
-// Refactored OCR logic with improved configuration
+// Enhanced OCR logic with improved configuration
 const performOCR = async (imageBuffer) => {
   console.log('Starting OCR process...');
   
   try {
-    const { data: { text } } = await Tesseract.recognize(
-      imageBuffer,
-      'eng',
-      {
-        logger: m => {
-          // Only log important messages to reduce noise
-          if (m.status === 'recognizing text' && m.progress === 1) {
-            console.log('OCR completed successfully');
-          }
-        },
-        // Improve OCR accuracy - allow numbers, currency symbols, and common receipt characters
-        tessedit_char_whitelist: '0123456789.,$₹€£¥ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :-\n/',
-        // Page segmentation mode: 3 = Auto (default, works well for most receipts)
-        // Alternative: 11 = Sparse text (good for receipts with scattered text)
-        psm: 3,
+    // Use PSM 6 (Uniform block of text) - best for structured receipts
+    // Falls back to trying PSM 11 if needed
+    let result = null;
+    let text = '';
+    
+    // Primary attempt with PSM 6 (good for structured receipts)
+    try {
+      const { data } = await Tesseract.recognize(
+        imageBuffer,
+        'eng',
+        {
+          logger: m => {
+            if (m.status === 'recognizing text' && m.progress === 1) {
+              console.log('OCR completed with PSM 6 (Uniform block)');
+            }
+          },
+          // Improved OCR configuration
+          tessedit_char_whitelist: '0123456789.,$₹€£¥RsABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :-\n/()',
+          psm: 6, // Uniform block of text - good for structured receipts
+        }
+      );
+      
+      text = data.text || '';
+      result = parseReceipt(text);
+      
+      // If we found a total, use this result
+      if (result.total) {
+        console.log('Successfully extracted total with PSM 6:', result.total);
       }
-    );
+    } catch (error) {
+      console.log('PSM 6 failed, trying PSM 11:', error.message);
+      
+      // Fallback to PSM 11 (Sparse text) - good for scattered text
+      try {
+        const { data } = await Tesseract.recognize(
+          imageBuffer,
+          'eng',
+          {
+            logger: () => {},
+            tessedit_char_whitelist: '0123456789.,$₹€£¥RsABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :-\n/()',
+            psm: 11, // Sparse text
+          }
+        );
+        
+        text = data.text || '';
+        result = parseReceipt(text);
+        
+        if (result.total) {
+          console.log('Successfully extracted total with PSM 11:', result.total);
+        }
+      } catch (error2) {
+        console.log('PSM 11 failed, trying default PSM 3:', error2.message);
+        
+        // Final fallback to default PSM 3 (Fully automatic)
+        const { data } = await Tesseract.recognize(
+          imageBuffer,
+          'eng',
+          {
+            logger: () => {},
+            tessedit_char_whitelist: '0123456789.,$₹€£¥RsABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :-\n/()',
+            psm: 3, // Fully automatic
+          }
+        );
+        
+        text = data.text || '';
+        result = parseReceipt(text);
+      }
+    }
     
     console.log('OCR process finished. Extracted text length:', text.length);
     console.log('OCR text preview:', text.substring(0, 500));
+    if (result && result.total) {
+      console.log('Successfully extracted total:', result.total);
+    }
     
-    return parseReceipt(text);
+    return result || { total: null };
+    
   } catch (error) {
     console.error('OCR Error:', error);
     throw new Error('Failed to perform OCR on the image');
@@ -197,10 +454,10 @@ exports.scanReceipt = async (req, res) => {
       console.log('PDF conversion successful.');
 
     } else if (req.file.mimetype.startsWith('image/')) {
-      console.log('Image detected.');
-      // For images, we can optionally preprocess them for better OCR
-      // For now, use the buffer directly, but we could add image enhancement here
-      imageBuffer = req.file.buffer;
+      console.log('Image detected, applying preprocessing...');
+      // Preprocess image for better OCR accuracy
+      imageBuffer = await preprocessImage(req.file.buffer);
+      console.log('Image preprocessing completed.');
 
     } else {
       return res.status(400).json({ msg: 'Unsupported file type. Please upload an image or PDF.' });
