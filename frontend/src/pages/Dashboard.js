@@ -12,16 +12,32 @@ import { deleteTransaction } from '../services/api';
 const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [categorizedTransactions, setCategorizedTransactions] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [activeView, setActiveView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [extractedAmount, setExtractedAmount] = useState(null);
   const [overspendingAlert, setOverspendingAlert] = useState(null);
 
-  const fetchTransactions = async (categorize = false) => {
+  const fetchTransactions = async (categorize = false, month = null, year = null) => {
     try {
       setLoading(true);
-      const response = await getTransactions(categorize);
-      if (categorize && response.data.categorized) {
+      // If month and year are provided, calculate the date range
+      let params = {};
+      if (month && year) {
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0); // Last day of the month
+        params = {
+          categorize: categorize,
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0]
+        };
+      } else {
+        params = { categorize };
+      }
+      
+      const response = await getTransactions(params);
+      if (categorize) {
         setCategorizedTransactions(response.data.data || []);
       } else {
         setTransactions(response.data.data || []);
@@ -61,9 +77,11 @@ const Dashboard = () => {
   // Fetch categorized transactions when switching to categorized view
   useEffect(() => {
     if (activeView === 'categorized') {
-      fetchTransactions(true);
+      fetchTransactions(true, selectedMonth, selectedYear);
+    } else {
+      fetchTransactions(false);
     }
-  }, [activeView]);
+  }, [activeView, selectedMonth, selectedYear]);
 
   // Handler to save new transactions
   const handleAddTransaction = async (transaction) => {
@@ -167,7 +185,12 @@ const Dashboard = () => {
       case 'categorized':
         return <CategorizedTransactionList 
           categorizedData={categorizedTransactions} 
-          onDeleteTransaction={handleDeleteTransaction} 
+          onDeleteTransaction={handleDeleteTransaction}
+          onMonthYearChange={(month, year) => {
+            setSelectedMonth(month);
+            setSelectedYear(year);
+            fetchTransactions(true, month, year);
+          }}
           loading={loading} 
         />;
       case 'budgets':

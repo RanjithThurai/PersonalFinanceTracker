@@ -1,6 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CategorizedTransactionList = ({ categorizedData, onDeleteTransaction }) => {
+const CategorizedTransactionList = ({ categorizedData, onDeleteTransaction, onMonthYearChange }) => {
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  // Notify parent component when month/year changes
+  useEffect(() => {
+    if (onMonthYearChange) {
+      onMonthYearChange(selectedMonth, selectedYear);
+    }
+  }, [selectedMonth, selectedYear, onMonthYearChange]);
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
 
   const toggleCategory = (category) => {
@@ -39,7 +55,33 @@ const CategorizedTransactionList = ({ categorizedData, onDeleteTransaction }) =>
 
   return (
     <div className="card transaction-list">
-      <h3>Transactions by Category</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h3 style={{ margin: 0 }}>Transactions by Category</h3>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <select 
+            value={selectedMonth} 
+            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          >
+            {months.map((month, index) => (
+              <option key={index} value={index + 1}>
+                {month}
+              </option>
+            ))}
+          </select>
+          <select 
+            value={selectedYear} 
+            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {/* Overall Summary */}
       <div className="summary-container" style={{ marginBottom: '1.5rem' }}>
