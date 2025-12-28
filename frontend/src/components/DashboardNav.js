@@ -1,4 +1,3 @@
-// File Path: src/components/DashboardNav.js
 import React from 'react';
 
 const DashboardNav = ({ setActiveView, activeView }) => {
@@ -23,21 +22,6 @@ const DashboardNav = ({ setActiveView, activeView }) => {
         className={`nav-btn ${activeView === 'budgets' ? 'active' : ''}`}
         onClick={() => setActiveView('budgets')}>
         Budgets
-      </button>
-      <button 
-        className={`nav-btn ${activeView === 'analytics' ? 'active' : ''}`}
-        onClick={() => setActiveView('analytics')}>
-        Analytics
-      </button>
-      <button 
-        className={`nav-btn ${activeView === 'reports' ? 'active' : ''}`}
-        onClick={() => setActiveView('reports')}>
-        Reports
-      </button>
-      <button 
-        className={`nav-btn ${activeView === 'charts' ? 'active' : ''}`}
-        onClick={() => setActiveView('charts')}>
-        View Charts
       </button>
       <button 
         className={`nav-btn ${activeView === 'upload' ? 'active' : ''}`}

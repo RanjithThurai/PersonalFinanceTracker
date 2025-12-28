@@ -1,13 +1,10 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardNav from '../components/DashboardNav';
 import TransactionForm from '../components/TransactionForm';
 import TransactionList from '../components/TransactionList';
 import CategorizedTransactionList from '../components/CategorizedTransactionList';
-import SummaryCharts from '../components/SummaryCharts';
 import ReceiptUpload from '../components/ReceiptUpload';
 import BudgetManager from '../components/BudgetManager';
-import MonthlyComparison from '../components/MonthlyComparison';
-import ReportDownload from '../components/ReportDownload';
 import { getTransactions, createTransaction } from '../services/api';
 import { deleteTransaction } from '../services/api';
 
@@ -145,31 +142,21 @@ const Dashboard = () => {
               </div>
             )}
             <TransactionForm 
-              onAddTransaction={handleAddTransaction} 
-              initialAmount={extractedAmount} 
+              onSubmit={handleAddTransaction} 
+              extractedAmount={extractedAmount} 
             />
           </>
         );
-      case 'charts':
-        return <SummaryCharts transactions={transactions} />;
-      case 'upload':
-        return <ReceiptUpload onReceiptScanned={handleReceiptScanned} />;
+      case 'list':
+        return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
+      case 'categorized':
+        return <CategorizedTransactionList categories={categorizedTransactions} onDelete={handleDeleteTransaction} loading={loading} />;
       case 'budgets':
         return <BudgetManager />;
-      case 'analytics':
-        return <MonthlyComparison />;
-      case 'reports':
-        return <ReportDownload />;
-      case 'categorized':
-        return (
-          <CategorizedTransactionList 
-            categorizedData={categorizedTransactions}
-            onDeleteTransaction={handleDeleteTransaction}
-          />
-        );
-      case 'list':
+      case 'upload':
+        return <ReceiptUpload onAmountExtracted={handleAmountExtracted} onTransactionAdded={handleTransactionAdded} />;
       default:
-        return <TransactionList transactions={transactions} onDeleteTransaction={handleDeleteTransaction} />;
+        return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
     }
   };
 
