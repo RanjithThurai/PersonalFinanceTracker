@@ -83,7 +83,12 @@ Save this secret - you'll need it for the backend environment variables.
      - **Output Directory**: `build`
 
 3. **Set Environment Variables**:
-   - `REACT_APP_API_URL`: Your backend URL (e.g., `https://your-app.onrender.com/api`)
+   - Go to **Settings** → **Environment Variables**
+   - Add a new variable:
+     - **Name**: `REACT_APP_API_URL`
+     - **Value**: Your backend URL (e.g., `https://your-app.onrender.com/api`)
+     - **Environment**: Select all (Production, Preview, Development)
+   - Click **Save**
 
 4. **Deploy**: Click "Deploy"
 
