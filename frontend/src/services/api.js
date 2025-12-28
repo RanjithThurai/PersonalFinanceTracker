@@ -35,7 +35,6 @@ api.interceptors.response.use(
   }
 );
 
-// --- ADD THIS NEW FUNCTION ---
 // Function to upload a receipt file
 export const uploadReceipt = (file) => {
   const formData = new FormData();
@@ -49,12 +48,18 @@ export const uploadReceipt = (file) => {
 };
 
 // --- Existing Functions ---
-export const getTransactions = (categorize = false, startDate = null, endDate = null) => {
-  const params = {};
-  if (categorize) params.categorize = 'true';
-  if (startDate) params.startDate = startDate;
-  if (endDate) params.endDate = endDate;
-  return api.get('/transactions', { params });
+export const getTransactions = (params = {}) => {
+  // Handle both object and individual parameters for backward compatibility
+  if (typeof params === 'object' && !Array.isArray(params)) {
+    return api.get('/transactions', { params });
+  }
+  // Fallback for old signature (categorize, startDate, endDate)
+  const [categorize = false, startDate = null, endDate = null] = params;
+  const queryParams = {};
+  if (categorize) queryParams.categorize = 'true';
+  if (startDate) queryParams.startDate = startDate;
+  if (endDate) queryParams.endDate = endDate;
+  return api.get('/transactions', { params: queryParams });
 };
 export const createTransaction = (transaction) => api.post('/transactions', transaction);
 export const deleteTransaction = (id) => api.delete(`/transactions/${id}`);
