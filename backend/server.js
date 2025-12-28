@@ -13,7 +13,32 @@ connectDB();
 
 // Middleware
 const frontendURL = process.env.FRONTEND_URL || "http://localhost:3000";
-app.use(cors({ origin: frontendURL }));
+
+// CORS configuration - allow Vercel deployments
+app.use(cors({ 
+  origin: function (origin, callback) {
+    // Allow requests with no origin
+    if (!origin) return callback(null, true);
+    
+    // Allow the configured frontend URL
+    if (origin === frontendURL) {
+      return callback(null, true);
+    }
+    
+    // Allow all Vercel deployments (production and preview)
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow localhost for development
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' })); // Limit request body size to 10MB
 
 // Routes
