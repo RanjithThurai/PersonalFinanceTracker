@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [extractedAmount, setExtractedAmount] = useState(null);
   const [overspendingAlert, setOverspendingAlert] = useState(null);
 
-  const fetchTransactions = async (categorize = false, month = null, year = null) => {
+  const fetchTransactions = useCallback(async (categorize = false, month = null, year = null) => {
     try {
       setLoading(true);
       // If month and year are provided, calculate the date range
@@ -28,19 +28,25 @@ const Dashboard = () => {
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0); // Last day of the month
         params = {
-          categorize: categorize,
+          categorize: categorize ? 'true' : 'false',
           startDate: startDate.toISOString().split('T')[0],
           endDate: endDate.toISOString().split('T')[0]
         };
       } else {
-        params = { categorize };
+        params = { categorize: categorize ? 'true' : 'false' };
       }
       
       const response = await getTransactions(params);
       if (categorize) {
-        setCategorizedTransactions(response.data.data || []);
+        // Make sure we have a valid array before setting state
+        if (Array.isArray(response.data?.data)) {
+          setCategorizedTransactions(response.data.data);
+        } else {
+          console.error('Unexpected response format for categorized transactions:', response.data);
+          setCategorizedTransactions([]);
+        }
       } else {
-        setTransactions(response.data.data || []);
+        setTransactions(Array.isArray(response.data?.data) ? response.data.data : []);
       }
     } catch (error) {
       console.error('Failed to fetch transactions:', error);

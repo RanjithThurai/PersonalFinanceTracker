@@ -39,7 +39,11 @@ const BudgetManager = () => {
       const endDate = new Date(year, month, 0).toISOString().split('T')[0];
 
       // Fetch transactions with date range filter
-      const response = await getTransactions(false, startDate, endDate);
+      const response = await getTransactions({
+        startDate,
+        endDate,
+        type: 'expense' // Only fetch expenses for budget calculations
+      });
       const transactions = response.data.data || [];
 
       // Calculate spending per category for the selected month
