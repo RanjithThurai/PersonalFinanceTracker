@@ -1,7 +1,14 @@
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+// Debug: Log the API URL (only in development)
+if (process.env.NODE_ENV === 'development') {
+  console.log('API Base URL:', baseURL);
+}
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: baseURL,
 });
 
 // Use an interceptor to add the auth token to every request

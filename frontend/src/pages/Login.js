@@ -24,7 +24,17 @@ const Login = ({ onLogin }) => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed. Please check your credentials.');
+      // Show more detailed error message
+      const errorMessage = error.response 
+        ? `Login failed: ${error.response.status} - ${error.response.statusText}`
+        : error.message || 'Login failed. Please check your credentials.';
+      console.error('Error details:', {
+        message: error.message,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+        fullURL: error.config?.baseURL + error.config?.url
+      });
+      alert(errorMessage);
     }
   };
 
