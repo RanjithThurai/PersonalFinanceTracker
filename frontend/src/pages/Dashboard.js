@@ -53,7 +53,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Add dependency array here
 
   const handleDeleteTransaction = async (id) => {
     try {
