@@ -58,11 +58,12 @@ You must have the following software installed on your machine:
       ```bash
       npm install
       ```
-    - Create a `.env` file in the `backend` root. Copy the contents of `.env.example` (if you have one) or use the template below and fill in your details:
+    - Create a `.env` file in the `backend` root. Use the template below and fill in your details:
       ```
       MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
       JWT_SECRET=<YOUR_RANDOMLY_GENERATED_JWT_SECRET_KEY>
       PORT=5000
+      FRONTEND_URL=http://localhost:3000
       ```
     - Start the backend server:
       ```bash
@@ -79,6 +80,10 @@ You must have the following software installed on your machine:
       ```bash
       npm install
       ```
+    - (Optional) Create a `.env` file in the `frontend` root if you want to customize the API URL:
+      ```
+      REACT_APP_API_URL=http://localhost:5000/api
+      ```
     - Start the React development server:
       ```bash
       npm start
@@ -86,4 +91,18 @@ You must have the following software installed on your machine:
       The application should open automatically in your browser at `http://localhost:3000`.
 
 You can now sign up for a new account and begin using the application!
-# minor update
+
+## 🚀 Deployment
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+**Quick Deployment Summary:**
+- **Backend**: Deploy to [Render](https://render.com) or [Railway](https://railway.app)
+- **Frontend**: Deploy to [Vercel](https://vercel.com) or [Netlify](https://netlify.com)
+- **Database**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (free tier available)
+
+The project includes configuration files for:
+- `render.yaml` - For Render deployment
+- `vercel.json` - For Vercel deployment
+- `netlify.toml` - For Netlify deployment
+- `Procfile` - For Heroku/Railway deployment
