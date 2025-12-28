@@ -165,7 +165,11 @@ const Dashboard = () => {
       case 'list':
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
       case 'categorized':
-        return <CategorizedTransactionList categories={categorizedTransactions} onDelete={handleDeleteTransaction} loading={loading} />;
+        return <CategorizedTransactionList 
+          categorizedData={categorizedTransactions} 
+          onDeleteTransaction={handleDeleteTransaction} 
+          loading={loading} 
+        />;
       case 'budgets':
         return <BudgetManager />;
       case 'upload':
