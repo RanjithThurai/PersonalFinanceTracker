@@ -157,8 +157,8 @@ const Dashboard = () => {
               </div>
             )}
             <TransactionForm 
-              onSubmit={handleAddTransaction} 
-              extractedAmount={extractedAmount} 
+              onAddTransaction={handleAddTransaction} 
+              initialAmount={extractedAmount}
             />
           </>
         );
