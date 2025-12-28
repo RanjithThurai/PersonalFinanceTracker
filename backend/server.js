@@ -47,8 +47,7 @@ app.use("/api/users", require("./routes/users"));
 app.use("/api/transactions", require("./routes/transactions"));
 app.use("/api/upload", require("./routes/upload"));
 app.use("/api/budgets", require("./routes/budgets"));
-app.use("/api/reports", require("./routes/reports"));
-app.use("/api/analytics", require("./routes/analytics"));
+// Reports and analytics features removed
 
 // Start server
 const PORT = process.env.PORT || 5000;
