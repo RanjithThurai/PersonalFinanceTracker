@@ -15,6 +15,26 @@ const DashboardNav = ({ setActiveView, activeView }) => {
         List Transactions
       </button>
       <button 
+        className={`nav-btn ${activeView === 'categorized' ? 'active' : ''}`}
+        onClick={() => setActiveView('categorized')}>
+        By Category
+      </button>
+      <button 
+        className={`nav-btn ${activeView === 'budgets' ? 'active' : ''}`}
+        onClick={() => setActiveView('budgets')}>
+        Budgets
+      </button>
+      <button 
+        className={`nav-btn ${activeView === 'analytics' ? 'active' : ''}`}
+        onClick={() => setActiveView('analytics')}>
+        Analytics
+      </button>
+      <button 
+        className={`nav-btn ${activeView === 'reports' ? 'active' : ''}`}
+        onClick={() => setActiveView('reports')}>
+        Reports
+      </button>
+      <button 
         className={`nav-btn ${activeView === 'charts' ? 'active' : ''}`}
         onClick={() => setActiveView('charts')}>
         View Charts

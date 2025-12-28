@@ -43,11 +43,11 @@ const TransactionList = ({ transactions , onDeleteTransaction}) => {
       <div className="summary-container">
         <div className="summary-box income-summary">
           <span>Net Income</span>
-          <span className="amount">₹{summary.totalIncome.toFixed(2)}</span>
+          <span className="amount">${summary.totalIncome.toFixed(2)}</span>
         </div>
         <div className="summary-box expense-summary">
           <span>Net Expense</span>
-          <span className="amount">₹{summary.totalExpense.toFixed(2)}</span>
+          <span className="amount">${summary.totalExpense.toFixed(2)}</span>
         </div>
       </div>
       <h3>History</h3>
@@ -97,7 +97,7 @@ const TransactionList = ({ transactions , onDeleteTransaction}) => {
                 <div className="amount-container">
                   <span className="amount">
                     {tx.type === 'expense' ? '-' : '+'}
-                    ₹{tx.amount.toFixed(2)}
+                    ${tx.amount.toFixed(2)}
                   </span>
                   <button className="delete-btn" onClick={()=>{
                        onDeleteTransaction(tx._id)

@@ -49,10 +49,40 @@ export const uploadReceipt = (file) => {
 };
 
 // --- Existing Functions ---
-export const getTransactions = () => api.get('/transactions');
+export const getTransactions = (categorize = false, startDate = null, endDate = null) => {
+  const params = {};
+  if (categorize) params.categorize = 'true';
+  if (startDate) params.startDate = startDate;
+  if (endDate) params.endDate = endDate;
+  return api.get('/transactions', { params });
+};
 export const createTransaction = (transaction) => api.post('/transactions', transaction);
 export const deleteTransaction = (id) => api.delete(`/transactions/${id}`);
 export const loginUser = (credentials) => api.post('/users/login', credentials);
 export const registerUser = (userData) => api.post('/users/register', userData);
+
+// --- Budget APIs ---
+export const getBudgets = (month) => {
+  const params = month ? { month } : {};
+  return api.get('/budgets', { params });
+};
+export const createOrUpdateBudget = (budgetData) => api.post('/budgets', budgetData);
+export const deleteBudget = (id) => api.delete(`/budgets/${id}`);
+
+// --- Report APIs ---
+export const downloadMonthlyReport = (month) => {
+  return api.get('/reports/monthly', {
+    params: { month },
+    responseType: 'blob' // Important for PDF download
+  });
+};
+
+// --- Analytics APIs ---
+export const getMonthlyComparison = (currentMonth, previousMonth) => {
+  const params = {};
+  if (currentMonth) params.currentMonth = currentMonth;
+  if (previousMonth) params.previousMonth = previousMonth;
+  return api.get('/analytics/monthly-comparison', { params });
+};
 
 export default api;
