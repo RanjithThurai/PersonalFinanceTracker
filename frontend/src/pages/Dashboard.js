@@ -93,11 +93,26 @@ const Dashboard = () => {
     }
   };
 
-  // Handler for when a receipt is successfully scanned
-  const handleReceiptScanned = (amount) => {
+  // Handler for when a receipt amount is extracted
+  const handleAmountExtracted = (amount) => {
     setExtractedAmount(amount);
     setActiveView('add');
   };
+
+  // Handler for when a transaction is added from receipt upload
+  const handleTransactionAdded = (transaction) => {
+    // Add the new transaction to the list
+    setTransactions(prev => [transaction, ...prev]);
+    setActiveView('list');
+    
+    // Refetch categorized transactions if needed
+    if (activeView === 'categorized') {
+      fetchTransactions(true);
+    }
+  };
+  
+  // Alias for backward compatibility
+  const handleReceiptScanned = handleAmountExtracted;
   
   const renderActiveView = () => {
     if (loading && (activeView === 'list' || activeView === 'categorized')) {
