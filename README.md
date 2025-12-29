@@ -57,7 +57,7 @@ Before you begin, ensure you have the following installed:
 
 1. Clone the Repository
 ```
-git clone [https://github.com/RanjithThurai/PersonalFinanceTracker.git](https://github.com/RanjithThurai/PersonalFinanceTracker.git)
+git clone https://github.com/RanjithThurai/PersonalFinanceTracker.git
 cd PersonalFinanceTracker
 ```
 2. Setup the Backend
