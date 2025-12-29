@@ -86,7 +86,8 @@ cd frontend
 npm install
 npm start
 ```
-###🌐 Deployment
+---
+## 🌐 Deployment
 
 The project is pre-configured for modern hosting platforms. You can find specific configuration files in the root directory:
 
@@ -95,6 +96,7 @@ Backend: Deploy to Render or Railway using the included render.yaml or Procfile.
 Frontend: Deploy to Vercel or Netlify using vercel.json or netlify.toml.
 
 Database: Use MongoDB Atlas for managed cloud storage.
+
 ---
 ## 🤝 Contributing
 
@@ -109,11 +111,13 @@ Commit your Changes (git commit -m 'Add some AmazingFeature')
 Push to the Branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
+
 ---
 ## 👤 Author
 Ranjith Thurai
 
 GitHub: @RanjithThurai
+
 ---
 ## 📝 Conclusion
 This Personal Finance Assistant is designed to provide users with a seamless way to manage their money. From secure logins to advanced OCR receipt scanning, it bridges the gap between manual entry and automated financial tracking.
