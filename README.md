@@ -2,10 +2,12 @@
 🎥 Project Demo
 
 🚀 Live Demo:
-👉 [Click here](https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app)
+👉 Click here
+
 📌 Description
 
-A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the MERN stack (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, scan receipts, manage budgets, and visualize spending patterns through an interactive dashboard.
+Personal Finance Assistant is a full-stack web application built using the MERN stack (MongoDB, Express.js, React, Node.js).
+It helps users track income and expenses, manage budgets, scan receipts, and visualize spending patterns through an interactive and responsive dashboard.
 
 ✨ Features
 🔐 Secure User Authentication
@@ -14,9 +16,9 @@ User registration with email & password validation
 
 Secure login using JWT-based authentication
 
-Password hashing using bcrypt.js
+Password hashing with bcrypt.js
 
-Protected routes with authentication middleware
+Protected routes using authentication middleware
 
 Token expiration and session handling
 
@@ -160,7 +162,7 @@ Git
 
 MongoDB Atlas account
 
-Installation & Setup
+⚙️ Installation & Setup
 1️⃣ Clone the Repository
 git clone https://github.com/RanjithThurai/PersonalFinanceTracker.git
 cd personal-finance-assistant
@@ -170,10 +172,10 @@ cd backend
 npm install
 
 
-Create a .env file in the backend directory:
+Create a .env file inside the backend directory:
 
-MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
-JWT_SECRET=<YOUR_JWT_SECRET>
+MONGO_URI=YOUR_MONGODB_ATLAS_CONNECTION_STRING
+JWT_SECRET=YOUR_JWT_SECRET
 PORT=5000
 FRONTEND_URL=http://localhost:3000
 
@@ -206,16 +208,26 @@ Database: MongoDB Atlas
 
 Deployment Configuration Files
 
-vercel.json
+vercel.json – Vercel deployment
 
-netlify.toml
+netlify.toml – Netlify deployment
 
-render.yaml
+render.yaml – Render deployment
 
-Procfile
+Procfile – Heroku / Railway deployment
 
 🏁 Conclusion
 
-This Personal Finance Assistant is a feature-rich, secure, and scalable MERN stack application that demonstrates real-world implementation of authentication, data visualization, OCR, budgeting, and responsive UI design.
-- `netlify.toml` - For Netlify deployment
-- `Procfile` - For Heroku/Railway deployment
+Personal Finance Assistant is a feature-rich, secure, and scalable MERN stack application that demonstrates real-world implementation of:
+
+Authentication & authorization
+
+Financial data management
+
+Interactive data visualization
+
+OCR-based receipt scanning
+
+Budget tracking
+
+Responsive UI/UX design
