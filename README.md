@@ -1,108 +1,221 @@
-# 💰 Personal Finance Assistant
+💰 Personal Finance Assistant
+🎥 Project Demo
 
-### 🎥 Project Demo
+🚀 Live Demo:
+👉 [Click here](https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app)
+📌 Description
 
-**🚀 Live Demo:** [Click here](https://netlify.app)
+A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the MERN stack (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, scan receipts, manage budgets, and visualize spending patterns through an interactive dashboard.
 
-### Description
-A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the **MERN stack** (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, and visualize their spending habits through an interactive, multi-chart dashboard.
+✨ Features
+🔐 Secure User Authentication
 
-## ✨ Features
+User registration with email & password validation
 
-- **Secure User Authentication**: Full sign-up and login system using JSON Web Tokens (JWTs) for secure, session-based access.
-- **Transaction Management**: Users can easily add, view, and delete their personal income and expense records.
-- **Interactive Dashboard**: A dynamic dashboard with multiple charts to visualize financial data:
-  - Total Income vs. Total Expense Bar Chart.
-  - Horizontal Bar Chart for detailed spending by category.
-  - Doughnut Chart for proportional expense breakdown.
-- **Receipt Scanning**: Users can upload an image of a receipt, and the application will use OCR (Optical Character Recognition) to automatically extract the total amount.
-- **Data Filtering**: The transaction list can be filtered by a specific date range.
-- **Dual Theme**: A persistent dark/light mode toggle for user comfort.
+Secure login using JWT-based authentication
 
-## 🛠️ Tech Stack
+Password hashing using bcrypt.js
 
-- **Frontend**: React, React Router, Axios, Chart.js
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB (with Mongoose)
-- **Authentication**: JSON Web Tokens (JWT), bcrypt.js
-- **File Handling**: Multer (for uploads), Tesseract.js (for OCR)
+Protected routes with authentication middleware
 
-## 🚀 Getting Started
+Token expiration and session handling
 
-Follow these instructions to get a copy of the project up and running on your local machine.
+💰 Transaction Management
 
-### Prerequisites
+Add income and expense transactions
 
-You must have the following software installed on your machine:
+Fields: amount, description, category, date
 
-- [Node.js](https://nodejs.org/en/) (which includes npm)
-- [Git](https://git-scm.com/)
-- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account for the database.
+View all transactions in an organized list
 
-### Installation & Setup
+Delete transactions with confirmation
 
-1.  **Clone the repository:**
+Predefined categories (Food, Transport, Entertainment, Bills, etc.)
 
-    ```bash
-    git clone https://github.com/PersonalFinanceTracker.git
-    cd personal-finance-assistant
-    ```
+Support for both income and expense entries
 
-2.  **Setup the Backend:**
+Filter transactions by date range and category
 
-    - Navigate to the backend directory:
-      ```bash
-      cd backend
-      ```
-    - Install the required dependencies:
-      ```bash
-      npm install
-      ```
-    - Create a `.env` file in the `backend` root. Use the template below and fill in your details:
-      ```
-      MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
-      JWT_SECRET=<YOUR_RANDOMLY_GENERATED_JWT_SECRET_KEY>
-      PORT=5000
-      FRONTEND_URL=http://localhost:3000
-      ```
-    - Start the backend server:
-      ```bash
-      node server.js
-      ```
-      The server should be running on `http://localhost:5000`.
+Search transactions by description or amount
 
-3.  **Setup the Frontend:**
-    - Open a new terminal window and navigate to the frontend directory:
-      ```bash
-      cd frontend
-      ```
-    - Install the required dependencies:
-      ```bash
-      npm install
-      ```
-    - (Optional) Create a `.env` file in the `frontend` root if you want to customize the API URL:
-      ```
-      REACT_APP_API_URL=http://localhost:5000/api
-      ```
-    - Start the React development server:
-      ```bash
-      npm start
-      ```
-      The application should open automatically in your browser at `http://localhost:3000`.
+📊 Interactive Dashboard & Analytics
 
-You can now sign up for a new account and begin using the application!
+Real-time financial overview dashboard
 
-## 🚀 Deployment
+Bar Chart – Income vs Expenses comparison
 
-For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+Doughnut Chart – Expense breakdown by category
 
-**Quick Deployment Summary:**
-- **Backend**: Deploy to [Render](https://render.com) or [Railway](https://railway.app)
-- **Frontend**: Deploy to [Vercel](https://vercel.com) or [Netlify](https://netlify.com)
-- **Database**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (free tier available)
+Horizontal Bar Chart – Category-wise spending analysis
 
-The project includes configuration files for:
-- `render.yaml` - For Render deployment
-- `vercel.json` - For Vercel deployment
+Line Chart – Spending trends over time
+
+Summary statistics:
+
+Total income
+
+Total expenses
+
+Current balance
+
+Charts update automatically when data changes
+
+📅 Monthly & Yearly View Toggle
+
+Monthly transaction view
+
+Yearly financial summary
+
+Smooth toggle between monthly and yearly views
+
+Dynamic year selector (from 2020 to current year)
+
+Month selector appears only in monthly view
+
+Optimized API calls based on selected view
+
+📸 Receipt Scanning (OCR)
+
+Upload receipt images (JPG, PNG, PDF)
+
+OCR processing using Tesseract.js
+
+Automatic amount extraction from receipts
+
+Manual correction option before saving
+
+Convert receipts directly into transactions
+
+File type and size validation
+
+Loading and progress indicators during scanning
+
+🎯 Budget Management
+
+Create monthly budgets by category
+
+Real-time budget tracking
+
+Overspending alerts
+
+Visual progress bars for budget usage
+
+Budget vs actual spending comparison
+
+Automatic monthly budget reset
+
+🎨 User Experience
+
+Fully responsive design (mobile, tablet, desktop)
+
+Persistent dark / light theme toggle
+
+Smooth animations and transitions
+
+Skeleton loaders and spinners
+
+Real-time form validation
+
+User-friendly error handling
+
+🛠️ Tech Stack
+Frontend
+
+React
+
+React Router
+
+Axios
+
+Chart.js
+
+Backend
+
+Node.js
+
+Express.js
+
+Database
+
+MongoDB (with Mongoose)
+
+Authentication & Security
+
+JSON Web Tokens (JWT)
+
+bcrypt.js
+
+File Handling & OCR
+
+Multer
+
+Tesseract.js
+
+🚀 Getting Started
+Prerequisites
+
+Node.js (with npm)
+
+Git
+
+MongoDB Atlas account
+
+Installation & Setup
+1️⃣ Clone the Repository
+git clone https://github.com/RanjithThurai/PersonalFinanceTracker.git
+cd personal-finance-assistant
+
+2️⃣ Backend Setup
+cd backend
+npm install
+
+
+Create a .env file in the backend directory:
+
+MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
+JWT_SECRET=<YOUR_JWT_SECRET>
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+
+
+Start the backend server:
+
+node server.js
+
+3️⃣ Frontend Setup
+cd frontend
+npm install
+
+
+(Optional) Create a .env file:
+
+REACT_APP_API_URL=http://localhost:5000/api
+
+
+Start the frontend server:
+
+npm start
+
+🚀 Deployment
+
+Frontend: Vercel / Netlify
+
+Backend: Render / Railway
+
+Database: MongoDB Atlas
+
+Deployment Configuration Files
+
+vercel.json
+
+netlify.toml
+
+render.yaml
+
+Procfile
+
+🏁 Conclusion
+
+This Personal Finance Assistant is a feature-rich, secure, and scalable MERN stack application that demonstrates real-world implementation of authentication, data visualization, OCR, budgeting, and responsive UI design.
 - `netlify.toml` - For Netlify deployment
 - `Procfile` - For Heroku/Railway deployment
