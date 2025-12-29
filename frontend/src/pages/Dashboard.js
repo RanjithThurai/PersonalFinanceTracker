@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import DashboardNav from '../components/DashboardNav';
 import TransactionForm from '../components/TransactionForm';
 import TransactionList from '../components/TransactionList';
@@ -18,6 +18,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [extractedAmount, setExtractedAmount] = useState(null);
   const [overspendingAlert, setOverspendingAlert] = useState(null);
+  
+  // Memoize the active view to prevent unnecessary re-renders
+  const memoizedActiveView = useMemo(() => activeView, [activeView]);
 
   const fetchTransactions = useCallback(async (categorize = false, month = null, year = null) => {
     try {
@@ -37,23 +40,32 @@ const Dashboard = () => {
       }
       
       const response = await getTransactions(params);
+      
+      // Use functional updates to ensure we're working with the latest state
       if (categorize) {
-        // Make sure we have a valid array before setting state
-        if (Array.isArray(response.data?.data)) {
-          setCategorizedTransactions(response.data.data);
-        } else {
-          console.error('Unexpected response format for categorized transactions:', response.data);
-          setCategorizedTransactions([]);
-        }
+        setCategorizedTransactions(prev => {
+          // Only update if the data has actually changed
+          const newData = Array.isArray(response.data?.data) ? response.data.data : [];
+          if (JSON.stringify(prev) !== JSON.stringify(newData)) {
+            return newData;
+          }
+          return prev;
+        });
       } else {
-        setTransactions(Array.isArray(response.data?.data) ? response.data.data : []);
+        setTransactions(prev => {
+          const newData = Array.isArray(response.data?.data) ? response.data.data : [];
+          if (JSON.stringify(prev) !== JSON.stringify(newData)) {
+            return newData;
+          }
+          return prev;
+        });
       }
     } catch (error) {
       console.error('Failed to fetch transactions:', error);
     } finally {
       setLoading(false);
     }
-  }, []); // Add dependency array here
+  }, []);
 
   const handleDeleteTransaction = async (id) => {
     try {
@@ -78,16 +90,26 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
-  // Fetch categorized transactions when switching to categorized view
+  // Fetch transactions when the component mounts or when the active view changes
   useEffect(() => {
-    if (activeView === 'categorized') {
+    // Only fetch if the view is actually changing to prevent unnecessary requests
+    if (memoizedActiveView === 'categorized') {
       fetchTransactions(true, selectedMonth, selectedYear);
-    } else {
+    } else if (memoizedActiveView === 'list') {
       fetchTransactions(false);
     }
-  }, [activeView, selectedMonth, selectedYear]);
+  }, [memoizedActiveView]);
+
+  // Handle month/year changes for categorized view
+  const handleMonthYearChange = useCallback((month, year) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    if (memoizedActiveView === 'categorized') {
+      fetchTransactions(true, month, year);
+    }
+  }, [memoizedActiveView, fetchTransactions]);
 
   // Handler to save new transactions
   const handleAddTransaction = async (transaction) => {
@@ -108,7 +130,7 @@ const Dashboard = () => {
       setActiveView('list'); // Switch back to the list view after adding
       
       // Refetch categorized if needed
-      if (activeView === 'categorized') {
+      if (memoizedActiveView === 'categorized') {
         fetchTransactions(true);
       }
     } catch (error) {
@@ -118,32 +140,39 @@ const Dashboard = () => {
   };
 
   // Handler for when a receipt amount is extracted
-  const handleAmountExtracted = (amount) => {
+  const handleAmountExtracted = useCallback((amount) => {
     setExtractedAmount(amount);
     setActiveView('add');
-  };
+  }, []);
 
   // Handler for when a transaction is added from receipt upload
-  const handleTransactionAdded = (transaction) => {
+  const handleTransactionAdded = useCallback((transaction) => {
     // Add the new transaction to the list
     setTransactions(prev => [transaction, ...prev]);
     setActiveView('list');
     
     // Refetch categorized transactions if needed
-    if (activeView === 'categorized') {
-      fetchTransactions(true);
+    if (memoizedActiveView === 'categorized') {
+      fetchTransactions(true, selectedMonth, selectedYear);
     }
-  };
+  }, [memoizedActiveView, selectedMonth, selectedYear, fetchTransactions]);
   
-  // Alias for backward compatibility
-  const handleReceiptScanned = handleAmountExtracted;
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      // Cleanup any pending timeouts when component unmounts
+      if (overspendingAlert) {
+        setOverspendingAlert(null);
+      }
+    };
+  }, [overspendingAlert]);
   
-  const renderActiveView = () => {
-    if (loading && (activeView === 'list' || activeView === 'categorized')) {
-      return <p>Loading...</p>;
+  const renderActiveView = useCallback(() => {
+    if (loading && (memoizedActiveView === 'list' || memoizedActiveView === 'categorized')) {
+      return <div className="loading-container">Loading...</div>;
     }
     
-    switch (activeView) {
+    switch (memoizedActiveView) {
       case 'add':
         return (
           <>
@@ -192,11 +221,9 @@ const Dashboard = () => {
         return <CategorizedTransactionList 
           categorizedData={categorizedTransactions} 
           onDeleteTransaction={handleDeleteTransaction}
-          onMonthYearChange={(month, year) => {
-            setSelectedMonth(month);
-            setSelectedYear(year);
-            fetchTransactions(true, month, year);
-          }}
+          onMonthYearChange={handleMonthYearChange}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
           loading={loading} 
         />;
       case 'budgets':
@@ -206,13 +233,31 @@ const Dashboard = () => {
       default:
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
     }
-  };
+  }, [
+    memoizedActiveView, 
+    transactions, 
+    categorizedTransactions, 
+    extractedAmount, 
+    overspendingAlert, 
+    handleAddTransaction, 
+    handleDeleteTransaction, 
+    loading, 
+    handleMonthYearChange,
+    handleAmountExtracted,
+    handleTransactionAdded
+  ]);
+
+  // Memoize the DashboardNav to prevent unnecessary re-renders
+  const memoizedDashboardNav = useMemo(
+    () => <DashboardNav setActiveView={setActiveView} activeView={memoizedActiveView} />,
+    [memoizedActiveView]
+  );
 
   return (
-    <div>
-      <DashboardNav setActiveView={setActiveView} activeView={activeView} />
+    <div className="dashboard">
+      {memoizedDashboardNav}
       <div className="dashboard-content">
-        {renderActiveView()}
+        {useMemo(() => renderActiveView(), [renderActiveView])}
       </div>
     </div>
   );
