@@ -1,7 +1,7 @@
 # 💰 Personal Finance Assistant
 
 ### 🎥 Project Demo
-**🚀 Live Demo:** [Click here]([https://netlify.app](https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app?_vercel_share=k96wCBORNl2gYazWIDyVOrB8VoLgynWz)
+**🚀 Live Demo:** [Click here]([https://netlify.app](https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app?_vercel_share=k96wCBORNl2gYazWIDyVOrB8VoLgynWz))
 
 ### 📝 Description
 A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the **MERN stack** (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, and visualize spending habits through an interactive dashboard.
