@@ -39,7 +39,7 @@ openssl rand -base64 32
 
 ### Windows (PowerShell):
 ```powershell
-[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+powershell -Command "[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))"
 ```
 
 ## Important Notes
