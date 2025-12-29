@@ -1,45 +1,40 @@
-💰 Personal Finance Assistant
-🎥 Project Demo
-🚀 Live Demo: Click here
+# 💰 Personal Finance Assistant
 
-Description
-A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the MERN stack (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, and visualize their spending habits through an interactive, multi-chart dashboard.
+### 🎥 Project Demo
+**🚀 Live Demo:** [Click here](https://netlify.app)
 
-Shutterstock
+### 📝 Description
+A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the **MERN stack** (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, and visualize spending habits through an interactive dashboard.
 
-✨ Features
-Secure User Authentication: Full sign-up and login system using JSON Web Tokens (JWTs) for secure, session-based access.
+---
 
-Transaction Management: Users can easily add, view, and delete their personal income and expense records.
+## ✨ Features
 
-Interactive Dashboard: A dynamic dashboard with multiple charts to visualize financial data:
+* **Secure User Authentication**: Full sign-up and login system using **JSON Web Tokens (JWTs)** for secure, session-based access.
+* **Transaction Management**: Users can easily add, view, and delete their personal income and expense records.
+* **Interactive Dashboard**: A dynamic dashboard with multiple charts to visualize financial data:
+    * Total Income vs. Total Expense Bar Chart.
+    * Horizontal Bar Chart for detailed spending by category.
+    * Doughnut Chart for proportional expense breakdown.
+* **Receipt Scanning**: Users can upload an image of a receipt, and the application will use **OCR** (Optical Character Recognition) via **Tesseract.js** to automatically extract the total amount.
+* **Data Filtering**: The transaction list can be filtered by a specific date range.
+* **Dual Theme**: A persistent dark/light mode toggle for user comfort.
 
-Total Income vs. Total Expense Bar Chart.
+---
 
-Horizontal Bar Chart for detailed spending by category.
+## 🛠️ Tech Stack
 
-Doughnut Chart for proportional expense breakdown.
+* **Frontend**: React, React Router, Axios, Chart.js
+* **Backend**: Node.js, Express.js
+* **Database**: MongoDB (with Mongoose)
+* **Authentication**: JSON Web Tokens (JWT), bcrypt.js
+* **File Handling**: Multer (for uploads), Tesseract.js (for OCR)
 
-Receipt Scanning: Users can upload an image of a receipt, and the application will use OCR (Optical Character Recognition) via Tesseract.js to automatically extract the total amount.
+---
 
-Data Filtering: The transaction list can be filtered by a specific date range.
+## 📂 Project Structure
 
-Dual Theme: A persistent dark/light mode toggle for user comfort.
-
-🛠️ Tech Stack
-Frontend: React, React Router, Axios, Chart.js
-
-Backend: Node.js, Express.js
-
-Database: MongoDB (with Mongoose)
-
-Authentication: JSON Web Tokens (JWT), bcrypt.js
-
-File Handling: Multer (for uploads), Tesseract.js (for OCR)
-
-📂 Project Structure
-Plaintext
-
+```text
 PersonalFinanceTracker/
 ├── backend/            # Express server, MongoDB models, and API routes
 ├── frontend/           # React application, components, and assets
@@ -50,24 +45,20 @@ PersonalFinanceTracker/
 Follow these instructions to get a copy of the project up and running on your local machine.
 
 Prerequisites
-You must have the following software installed on your machine:
-
 Node.js (includes npm)
 
 Git
 
-A free MongoDB Atlas account.
+A free MongoDB Atlas account
 
 Installation & Setup
-Clone the repository:
-
+1. Clone the repository
 Bash
 
-git clone https://github.com/RanjithThurai/PersonalFinanceTracker.git
+git clone [https://github.com/RanjithThurai/PersonalFinanceTracker.git](https://github.com/RanjithThurai/PersonalFinanceTracker.git)
 cd PersonalFinanceTracker
-Setup the Backend:
-
-Navigate to the backend directory:
+2. Setup the Backend
+Navigate to the backend directory and install dependencies:
 
 Bash
 
@@ -86,25 +77,19 @@ Start the backend server:
 Bash
 
 node server.js
-Setup the Frontend:
-
-Navigate to the frontend directory:
+3. Setup the Frontend
+Navigate to the frontend directory and install dependencies:
 
 Bash
 
 cd ../frontend
 npm install
-(Optional) Create a .env file in the frontend root:
-
-Code snippet
-
-REACT_APP_API_URL=http://localhost:5000/api
-Start the development server:
+Start the React development server:
 
 Bash
 
 npm start
-🚀 Deployment
+🌐 Deployment
 The project is pre-configured for modern hosting platforms:
 
 Backend: Deploy to Render or Railway using the included render.yaml or Procfile.
@@ -117,5 +102,3 @@ Database: Use MongoDB Atlas.
 Ranjith Thurai
 
 GitHub: @RanjithThurai
-
-Would you like me to help you write the content for the DEPLOYMENT.md file mentioned in your structure?
