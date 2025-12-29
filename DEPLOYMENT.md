@@ -28,7 +28,7 @@ Generate a random secret key for JWT authentication:
 openssl rand -base64 32
 
 # On Windows (PowerShell)
-[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+powershell -Command "[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))"
 ```
 
 Save this secret - you'll need it for the backend environment variables.
