@@ -1,7 +1,7 @@
 # 💰 Personal Finance Assistant
 
 ### 🎥 Project Demo
-**🚀 Live Demo:** [Click here](https://netlify.app)
+**🚀 Live Demo:** [Click here]([https://netlify.app](https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app?_vercel_share=k96wCBORNl2gYazWIDyVOrB8VoLgynWz)
 
 ### 📝 Description
 A full-stack web application designed to help users track, manage, and understand their financial activities. Built with the **MERN stack** (MongoDB, Express.js, React, Node.js), this app allows users to log income and expenses, categorize transactions, and visualize spending habits through an interactive dashboard.
@@ -55,9 +55,9 @@ Before you begin, ensure you have the following installed:
 ---
 
 ## 💻 Installation & Setup
-```
+
 ### 1. Clone the Repository
-```bash
+bash
 git clone [https://github.com/RanjithThurai/PersonalFinanceTracker.git](https://github.com/RanjithThurai/PersonalFinanceTracker.git)
 cd PersonalFinanceTracker
 2. Setup the Backend
@@ -88,6 +88,7 @@ Bash
 cd frontend
 npm install
 npm start
+```
 🌐 Deployment
 The project is pre-configured for modern hosting platforms. You can find specific configuration files in the root directory:
 
@@ -96,7 +97,7 @@ Backend: Deploy to Render or Railway using the included render.yaml or Procfile.
 Frontend: Deploy to Vercel or Netlify using vercel.json or netlify.toml.
 
 Database: Use MongoDB Atlas for managed cloud storage.
-
+```
 🤝 Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
@@ -109,11 +110,12 @@ Commit your Changes (git commit -m 'Add some AmazingFeature')
 Push to the Branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
-
+```
 👤 Author
 Ranjith Thurai
 
 GitHub: @RanjithThurai
-
+```
 📝 Conclusion
 This Personal Finance Assistant is designed to provide users with a seamless way to manage their money. From secure logins to advanced OCR receipt scanning, it bridges the gap between manual entry and automated financial tracking.
+```
