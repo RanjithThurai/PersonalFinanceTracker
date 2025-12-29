@@ -1,22 +1,22 @@
 import React, { useState, useMemo, memo, useCallback } from 'react';
 
-// TransactionItem component is no longer needed as we've moved its functionality inline
-
 const CategorizedTransactionList = memo(({ 
   categorizedData, 
   onDeleteTransaction, 
   onMonthYearChange, 
   selectedMonth, 
   selectedYear, 
-  loading 
+  loading,
+  viewMode,
+  onViewModeChange
 }) => {
-  // Use props for selected month/year to keep in sync with parent
+  console.log('CategorizedTransactionList rendering - viewMode:', viewMode);
 
   // Memoize the months and years arrays
   const { months, years } = useMemo(() => ({
     months: ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'],
-    years: Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i)
+    years: Array.from({ length: new Date().getFullYear() - 2019 }, (_, i) => 2020 + i)
   }), []);
 
   // Handle month/year changes
@@ -27,8 +27,29 @@ const CategorizedTransactionList = memo(({
 
   const handleYearChange = useCallback((e) => {
     const newYear = parseInt(e.target.value);
-    onMonthYearChange?.(selectedMonth, newYear);
-  }, [onMonthYearChange, selectedMonth]);
+    if (viewMode === 'yearly') {
+      onMonthYearChange?.(null, newYear);
+    } else {
+      onMonthYearChange?.(selectedMonth, newYear);
+    }
+  }, [viewMode, onMonthYearChange, selectedMonth]);
+  
+  // Handle view mode change
+  const handleViewModeChange = useCallback((mode) => {
+    console.log('Toggle clicked:', mode, 'Current viewMode:', viewMode);
+    if (viewMode !== mode) {
+      console.log('About to call onViewModeChange with:', mode);
+      onViewModeChange(mode);
+      
+      if (mode === 'yearly') {
+        onMonthYearChange?.(null, selectedYear);
+      } else {
+        onMonthYearChange?.(selectedMonth, selectedYear);
+      }
+    } else {
+      console.log('Mode is the same, not changing');
+    }
+  }, [viewMode, onViewModeChange, onMonthYearChange, selectedMonth, selectedYear]);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
 
   const toggleCategory = useCallback((categoryName) => {
@@ -44,11 +65,6 @@ const CategorizedTransactionList = memo(({
       }
     });
   }, []);
-
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-  };
 
   const memoizedCategories = useMemo(() => {
     if (!categorizedData || !Array.isArray(categorizedData)) return [];
@@ -154,42 +170,136 @@ const CategorizedTransactionList = memo(({
     );
   }
 
-  const renderMonthYearSelectors = () => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-      <h3 style={{ margin: 0 }}>Transactions by Category</h3>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <select 
-          value={selectedMonth} 
-          onChange={handleMonthChange}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-        >
-          {months.map((month, index) => (
-            <option key={month} value={index + 1}>
-              {month}
-            </option>
-          ))}
-        </select>
-        <select 
-          value={selectedYear} 
-          onChange={handleYearChange}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-        >
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+  const renderMonthYearSelectors = () => {
+    console.log('renderMonthYearSelectors called - viewMode:', viewMode);
+    return (
+    <div style={{ marginBottom: '1.5rem' }}>
+        {/* Header with title and view toggle */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          marginBottom: '1rem',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#333' }}>Transactions by Category</h3>
+          
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.5rem', 
+            backgroundColor: '#f0f0f0', 
+            padding: '0.25rem', 
+            borderRadius: '6px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            <button
+              onClick={() => handleViewModeChange('monthly')}
+              style={{
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: viewMode === 'monthly' ? '#007bff' : 'transparent',
+                color: viewMode === 'monthly' ? 'white' : '#333',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: viewMode === 'monthly' ? '500' : 'normal',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => handleViewModeChange('yearly')}
+              style={{
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: viewMode === 'yearly' ? '#007bff' : 'transparent',
+                color: viewMode === 'yearly' ? 'white' : '#333',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: viewMode === 'yearly' ? '500' : 'normal',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Yearly
+            </button>
+          </div>
+        </div>
+        
+        {/* Date selectors row */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          alignItems: 'center', 
+          gap: '1rem',
+          flexWrap: 'wrap'
+        }}>
+          {/* Month selector - ONLY shown in monthly view */}
+          {viewMode === 'monthly' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.9rem', color: '#666', fontWeight: '500' }}>Month:</label>
+              <select 
+                value={selectedMonth} 
+                onChange={handleMonthChange}
+                style={{ 
+                  padding: '0.5rem', 
+                  borderRadius: '6px', 
+                  border: '1px solid #ddd',
+                  backgroundColor: '#fff',
+                  fontSize: '0.9rem',
+                  minWidth: '120px',
+                  cursor: 'pointer'
+                }}
+              >
+                {months.map((month, index) => (
+                  <option key={month} value={index + 1}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          
+          {/* Year selector - ALWAYS shown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.9rem', color: '#666', fontWeight: '500' }}>Year:</label>
+            <select 
+              value={selectedYear} 
+              onChange={handleYearChange}
+              style={{ 
+                padding: '0.5rem', 
+                borderRadius: '6px', 
+                border: '1px solid #ddd',
+                backgroundColor: '#fff',
+                fontSize: '0.9rem',
+                minWidth: '100px',
+                cursor: 'pointer'
+              }}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   if (!memoizedCategories || memoizedCategories.length === 0) {
+    const periodText = viewMode === 'monthly' 
+      ? `${months[selectedMonth - 1]} ${selectedYear}`
+      : `${selectedYear}`;
+    
     return (
       <div className="card">
         {renderMonthYearSelectors()}
         <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-          No transactions found for {months[selectedMonth - 1]} {selectedYear}.
+          No transactions found for {periodText}.
         </p>
       </div>
     );

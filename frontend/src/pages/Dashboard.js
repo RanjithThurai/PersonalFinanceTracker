@@ -3,6 +3,7 @@ import DashboardNav from '../components/DashboardNav';
 import TransactionForm from '../components/TransactionForm';
 import TransactionList from '../components/TransactionList';
 import CategorizedTransactionList from '../components/CategorizedTransactionList';
+import SummaryCharts from '../components/SummaryCharts';
 import ReceiptUpload from '../components/ReceiptUpload';
 import BudgetManager from '../components/BudgetManager';
 import { getTransactions, createTransaction } from '../services/api';
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [extractedAmount, setExtractedAmount] = useState(null);
   const [overspendingAlert, setOverspendingAlert] = useState(null);
+  const [categorizedViewMode, setCategorizedViewMode] = useState('monthly'); // 'monthly' or 'yearly'
   
   // Memoize the active view to prevent unnecessary re-renders
   const memoizedActiveView = useMemo(() => activeView, [activeView]);
@@ -28,8 +30,18 @@ const Dashboard = () => {
       // If month and year are provided, calculate the date range
       let params = {};
       if (month && year) {
+        // Monthly view
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0); // Last day of the month
+        params = {
+          categorize: categorize ? 'true' : 'false',
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0]
+        };
+      } else if (year) {
+        // Yearly view (month is null)
+        const startDate = new Date(year, 0, 1); // January 1st
+        const endDate = new Date(year, 11, 31); // December 31st
         params = {
           categorize: categorize ? 'true' : 'false',
           startDate: startDate.toISOString().split('T')[0],
@@ -96,6 +108,7 @@ const Dashboard = () => {
   useEffect(() => {
     // Only fetch if the view is actually changing to prevent unnecessary requests
     if (memoizedActiveView === 'categorized') {
+      // Fetch monthly data by default when switching to categorized view
       fetchTransactions(true, selectedMonth, selectedYear);
     } else if (memoizedActiveView === 'list') {
       fetchTransactions(false);
@@ -104,7 +117,10 @@ const Dashboard = () => {
 
   // Handle month/year changes for categorized view
   const handleMonthYearChange = useCallback((month, year) => {
-    setSelectedMonth(month);
+    // Only update month if it's not null (for yearly view)
+    if (month !== null) {
+      setSelectedMonth(month);
+    }
     setSelectedYear(year);
     if (memoizedActiveView === 'categorized') {
       fetchTransactions(true, month, year);
@@ -224,8 +240,12 @@ const Dashboard = () => {
           onMonthYearChange={handleMonthYearChange}
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
-          loading={loading} 
+          loading={loading}
+          viewMode={categorizedViewMode}
+          onViewModeChange={setCategorizedViewMode}
         />;
+      case 'summary':
+        return <SummaryCharts transactions={transactions} />;
       case 'budgets':
         return <BudgetManager />;
       case 'upload':

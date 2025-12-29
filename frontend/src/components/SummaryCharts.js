@@ -9,7 +9,7 @@ import {
   LinearScale,
   BarElement,
   Title
-} from 'chart.js';
+} from 'chart.js/auto';
 
 ChartJS.register(
   ArcElement, Tooltip, Legend, CategoryScale, 
