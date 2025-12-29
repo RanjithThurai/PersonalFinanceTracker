@@ -56,19 +56,18 @@ Before you begin, ensure you have the following installed:
 
 ## 💻 Installation & Setup
 
-### 1. Clone the Repository
-
+1. Clone the Repository
+```
 git clone [https://github.com/RanjithThurai/PersonalFinanceTracker.git](https://github.com/RanjithThurai/PersonalFinanceTracker.git)
 cd PersonalFinanceTracker
+```
 2. Setup the Backend
-Navigate to the backend directory, install dependencies, and configure your environment variables.
+Navigate to the backend directory,
+install dependencies, and configure your environment variables.
 ```
 cd backend
 npm install
 Create a .env file in the /backend folder and add your credentials:
-```
-```
-Code snippet
 
 MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
 JWT_SECRET=<YOUR_RANDOMLY_GENERATED_JWT_SECRET_KEY>
@@ -80,13 +79,15 @@ Start the backend server:
 node server.js
 ```
 3. Setup the Frontend
-Open a new terminal window, navigate to the frontend directory, and start the React app.
+Open a new terminal window,
+navigate to the frontend directory,and start the React app.
 ```
 cd frontend
 npm install
 npm start
 ```
 🌐 Deployment
+
 The project is pre-configured for modern hosting platforms. You can find specific configuration files in the root directory:
 
 Backend: Deploy to Render or Railway using the included render.yaml or Procfile.
@@ -96,7 +97,7 @@ Frontend: Deploy to Vercel or Netlify using vercel.json or netlify.toml.
 Database: Use MongoDB Atlas for managed cloud storage.
 
 🤝 Contributing
-```
+
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 Fork the Project
@@ -108,11 +109,11 @@ Commit your Changes (git commit -m 'Add some AmazingFeature')
 Push to the Branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
-```
+
 👤 Author
 Ranjith Thurai
 
 GitHub: @RanjithThurai
-```
+
 📝 Conclusion
 This Personal Finance Assistant is designed to provide users with a seamless way to manage their money. From secure logins to advanced OCR receipt scanning, it bridges the gap between manual entry and automated financial tracking.
