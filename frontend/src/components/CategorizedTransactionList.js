@@ -11,6 +11,8 @@ const CategorizedTransactionList = memo(({
   onViewModeChange
 }) => {
   console.log('CategorizedTransactionList rendering - viewMode:', viewMode);
+  console.log('onDeleteTransaction prop:', onDeleteTransaction);
+  console.log('typeof onDeleteTransaction:', typeof onDeleteTransaction);
 
   // Memoize the months and years arrays
   const { months, years } = useMemo(() => ({

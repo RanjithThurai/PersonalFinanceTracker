@@ -2,7 +2,10 @@ import React, { useState, useMemo } from 'react';
 
 
 
-const TransactionList = ({ transactions , onDeleteTransaction}) => {
+const TransactionList = ({ transactions, onDelete }) => {
+  console.log('TransactionList - onDelete prop:', onDelete);
+  console.log('TransactionList - typeof onDelete:', typeof onDelete);
+  
   // --- STATE AND LOGIC (No changes here) ---
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -99,9 +102,14 @@ const TransactionList = ({ transactions , onDeleteTransaction}) => {
                     {tx.type === 'expense' ? '-' : '+'}
                     ${tx.amount.toFixed(2)}
                   </span>
-                  <button className="delete-btn" onClick={()=>{
-                       onDeleteTransaction(tx._id)
-                  }}>X</button>
+                  <button className="delete-btn" onClick={() => {
+    console.log('Delete button clicked, onDelete:', onDelete);
+    if (typeof onDelete === 'function') {
+      onDelete(tx._id);
+    } else {
+      console.error('onDelete is not a function!');
+    }
+  }}>X</button>
                 </div>
               </li>
             );

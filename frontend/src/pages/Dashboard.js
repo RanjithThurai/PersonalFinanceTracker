@@ -79,7 +79,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  const handleDeleteTransaction = async (id) => {
+  const handleDeleteTransaction = useCallback(async (id) => {
     try {
       await deleteTransaction(id);
       setTransactions(prev => prev.filter(tx => tx._id !== id));
@@ -98,7 +98,7 @@ const Dashboard = () => {
       console.error('Failed to delete transaction:', error);
       alert('Failed to delete transaction.');
     }
-  };
+  }, [activeView, fetchTransactions]);
 
   useEffect(() => {
     fetchTransactions();
@@ -113,7 +113,7 @@ const Dashboard = () => {
     } else if (memoizedActiveView === 'list') {
       fetchTransactions(false);
     }
-  }, [memoizedActiveView]);
+  }, [memoizedActiveView, fetchTransactions, selectedMonth, selectedYear]);
 
   // Handle month/year changes for categorized view
   const handleMonthYearChange = useCallback((month, year) => {
@@ -232,8 +232,10 @@ const Dashboard = () => {
           </>
         );
       case 'list':
+        console.log('Rendering TransactionList with handleDeleteTransaction:', handleDeleteTransaction);
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
       case 'categorized':
+        console.log('Rendering CategorizedTransactionList with handleDeleteTransaction:', handleDeleteTransaction);
         return <CategorizedTransactionList 
           categorizedData={categorizedTransactions} 
           onDeleteTransaction={handleDeleteTransaction}
@@ -264,7 +266,10 @@ const Dashboard = () => {
     loading, 
     handleMonthYearChange,
     handleAmountExtracted,
-    handleTransactionAdded
+    handleTransactionAdded,
+    categorizedViewMode,
+    selectedMonth,
+    selectedYear
   ]);
 
   // Memoize the DashboardNav to prevent unnecessary re-renders
