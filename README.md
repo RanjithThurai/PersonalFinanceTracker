@@ -57,34 +57,31 @@ Before you begin, ensure you have the following installed:
 ## 💻 Installation & Setup
 
 ### 1. Clone the Repository
-bash
+
 git clone [https://github.com/RanjithThurai/PersonalFinanceTracker.git](https://github.com/RanjithThurai/PersonalFinanceTracker.git)
 cd PersonalFinanceTracker
 2. Setup the Backend
 Navigate to the backend directory, install dependencies, and configure your environment variables.
-
-Bash
-
+```
 cd backend
 npm install
 Create a .env file in the /backend folder and add your credentials:
-
+```
+```
 Code snippet
 
 MONGO_URI=<YOUR_MONGODB_ATLAS_CONNECTION_STRING>
 JWT_SECRET=<YOUR_RANDOMLY_GENERATED_JWT_SECRET_KEY>
 PORT=5000
 FRONTEND_URL=http://localhost:3000
+```
+```
 Start the backend server:
-
-Bash
-
 node server.js
+```
 3. Setup the Frontend
 Open a new terminal window, navigate to the frontend directory, and start the React app.
-
-Bash
-
+```
 cd frontend
 npm install
 npm start
@@ -97,8 +94,9 @@ Backend: Deploy to Render or Railway using the included render.yaml or Procfile.
 Frontend: Deploy to Vercel or Netlify using vercel.json or netlify.toml.
 
 Database: Use MongoDB Atlas for managed cloud storage.
-```
+
 🤝 Contributing
+```
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 Fork the Project
@@ -118,4 +116,3 @@ GitHub: @RanjithThurai
 ```
 📝 Conclusion
 This Personal Finance Assistant is designed to provide users with a seamless way to manage their money. From secure logins to advanced OCR receipt scanning, it bridges the gap between manual entry and automated financial tracking.
-```
