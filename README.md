@@ -2,25 +2,23 @@
 🎥 Project Demo
 
 🚀 Live Demo:
-👉 Click here
+👉 https://personal-finance-tracker-fro-git-b29e77-ranjiththurais-projects.vercel.app
 
 📌 Description
 
-Personal Finance Assistant is a full-stack web application built using the MERN stack (MongoDB, Express.js, React, Node.js).
-It helps users track income and expenses, manage budgets, scan receipts, and visualize spending patterns through an interactive and responsive dashboard.
+A full-stack web application designed to help users track, manage, and understand their financial activities.
+Built with the MERN stack (MongoDB, Express.js, React, Node.js), this application allows users to log income and expenses, categorize transactions, scan receipts, manage budgets, and visualize spending habits through an interactive dashboard.
 
 ✨ Features
 🔐 Secure User Authentication
 
-User registration with email & password validation
-
-Secure login using JWT-based authentication
+User sign-up and login using JSON Web Tokens (JWT)
 
 Password hashing with bcrypt.js
 
-Protected routes using authentication middleware
+Protected routes with authentication middleware
 
-Token expiration and session handling
+Secure session and token expiration handling
 
 💰 Transaction Management
 
@@ -28,31 +26,27 @@ Add income and expense transactions
 
 Fields: amount, description, category, date
 
-View all transactions in an organized list
-
-Delete transactions with confirmation
+View and delete transactions
 
 Predefined categories (Food, Transport, Entertainment, Bills, etc.)
 
-Support for both income and expense entries
+Search transactions by description or amount
 
 Filter transactions by date range and category
 
-Search transactions by description or amount
-
 📊 Interactive Dashboard & Analytics
 
-Real-time financial overview dashboard
+Real-time financial dashboard
 
-Bar Chart – Income vs Expenses comparison
+Income vs Expense Bar Chart
 
-Doughnut Chart – Expense breakdown by category
+Category-wise Horizontal Bar Chart
 
-Horizontal Bar Chart – Category-wise spending analysis
+Expense distribution Doughnut Chart
 
-Line Chart – Spending trends over time
+Spending trend Line Chart
 
-Summary statistics:
+Summary metrics:
 
 Total income
 
@@ -60,9 +54,9 @@ Total expenses
 
 Current balance
 
-Charts update automatically when data changes
+Automatic chart updates on data changes
 
-📅 Monthly & Yearly View Toggle
+📅 Monthly & Yearly View
 
 Monthly transaction view
 
@@ -70,39 +64,31 @@ Yearly financial summary
 
 Smooth toggle between monthly and yearly views
 
-Dynamic year selector (from 2020 to current year)
+Dynamic year selector (2020 to current year)
 
-Month selector appears only in monthly view
-
-Optimized API calls based on selected view
+Month selector visible only in monthly mode
 
 📸 Receipt Scanning (OCR)
 
 Upload receipt images (JPG, PNG, PDF)
 
-OCR processing using Tesseract.js
+OCR using Tesseract.js
 
-Automatic amount extraction from receipts
+Automatic amount extraction
 
-Manual correction option before saving
+Manual correction before saving
 
 Convert receipts directly into transactions
-
-File type and size validation
-
-Loading and progress indicators during scanning
 
 🎯 Budget Management
 
 Create monthly budgets by category
 
-Real-time budget tracking
+Track real-time budget usage
 
 Overspending alerts
 
-Visual progress bars for budget usage
-
-Budget vs actual spending comparison
+Visual budget progress indicators
 
 Automatic monthly budget reset
 
@@ -110,7 +96,7 @@ Automatic monthly budget reset
 
 Fully responsive design (mobile, tablet, desktop)
 
-Persistent dark / light theme toggle
+Persistent dark/light theme toggle
 
 Smooth animations and transitions
 
@@ -121,6 +107,7 @@ Real-time form validation
 User-friendly error handling
 
 🛠️ Tech Stack
+
 Frontend
 
 React
@@ -139,11 +126,11 @@ Express.js
 
 Database
 
-MongoDB (with Mongoose)
+MongoDB (Mongoose)
 
 Authentication & Security
 
-JSON Web Tokens (JWT)
+JWT (JSON Web Tokens)
 
 bcrypt.js
 
@@ -156,7 +143,7 @@ Tesseract.js
 🚀 Getting Started
 Prerequisites
 
-Node.js (with npm)
+Node.js (npm included)
 
 Git
 
@@ -172,7 +159,7 @@ cd backend
 npm install
 
 
-Create a .env file inside the backend directory:
+Create a .env file in the backend directory:
 
 MONGO_URI=YOUR_MONGODB_ATLAS_CONNECTION_STRING
 JWT_SECRET=YOUR_JWT_SECRET
@@ -189,7 +176,7 @@ cd frontend
 npm install
 
 
-(Optional) Create a .env file:
+(Optional) .env file:
 
 REACT_APP_API_URL=http://localhost:5000/api
 
@@ -206,28 +193,16 @@ Backend: Render / Railway
 
 Database: MongoDB Atlas
 
-Deployment Configuration Files
+Deployment Files Included
 
-vercel.json – Vercel deployment
+vercel.json
 
-netlify.toml – Netlify deployment
+netlify.toml
 
-render.yaml – Render deployment
+render.yaml
 
-Procfile – Heroku / Railway deployment
+Procfile
 
 🏁 Conclusion
 
-Personal Finance Assistant is a feature-rich, secure, and scalable MERN stack application that demonstrates real-world implementation of:
-
-Authentication & authorization
-
-Financial data management
-
-Interactive data visualization
-
-OCR-based receipt scanning
-
-Budget tracking
-
-Responsive UI/UX design
+Personal Finance Assistant is a secure, scalable, and feature-rich MERN stack application demonstrating real-world implementation of authentication, financial data management, analytics, OCR integration, budgeting, and responsive UI design.
