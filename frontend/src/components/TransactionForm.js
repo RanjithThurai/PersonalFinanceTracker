@@ -24,7 +24,7 @@ const TransactionForm = ({ onAddTransaction, initialAmount }) => {
     const newTransaction = {
       type,
       category,
-      amount: parseFloat(amount),
+      amount: Number(parseFloat(amount).toFixed(2)),
       date,
       description
     };

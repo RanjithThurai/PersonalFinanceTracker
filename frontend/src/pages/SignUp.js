@@ -13,9 +13,8 @@ const SignUp = () => {
     try {
       // --- THIS IS THE FIX ---
       // The API call below was previously commented out. Now it's active.
-      const response = await registerUser({ username, email, password });
-      
-      console.log('User registered successfully:', response.data);
+      await registerUser({ username, email, password });
+
       alert('Sign up successful! Please log in.');
       navigate('/login');
 

@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [extractedAmount, setExtractedAmount] = useState(null);
   const [overspendingAlert, setOverspendingAlert] = useState(null);
   const [categorizedViewMode, setCategorizedViewMode] = useState('monthly'); // 'monthly' or 'yearly'
-  
+
   // Memoize the active view to prevent unnecessary re-renders
   const memoizedActiveView = useMemo(() => activeView, [activeView]);
 
@@ -50,9 +50,9 @@ const Dashboard = () => {
       } else {
         params = { categorize: categorize ? 'true' : 'false' };
       }
-      
+
       const response = await getTransactions(params);
-      
+
       // Use functional updates to ensure we're working with the latest state
       if (categorize) {
         setCategorizedTransactions(prev => {
@@ -84,7 +84,7 @@ const Dashboard = () => {
       await deleteTransaction(id);
       setTransactions(prev => prev.filter(tx => tx._id !== id));
       // Also update categorized transactions if needed
-      setCategorizedTransactions(prev => 
+      setCategorizedTransactions(prev =>
         prev.map(cat => ({
           ...cat,
           transactions: cat.transactions.filter(tx => tx._id !== id)
@@ -128,23 +128,23 @@ const Dashboard = () => {
   }, [memoizedActiveView, fetchTransactions]);
 
   // Handler to save new transactions
-  const handleAddTransaction = async (transaction) => {
+  const handleAddTransaction = useCallback(async (transaction) => {
     try {
       const response = await createTransaction(transaction);
       const newTransaction = response.data;
-      
+
       // Check for overspending warning in response
       if (newTransaction.overspendingWarning) {
         setOverspendingAlert(newTransaction.overspendingWarning);
         // Auto-dismiss after 10 seconds
         setTimeout(() => setOverspendingAlert(null), 10000);
       }
-      
+
       // Add the new transaction at the beginning of the list (newest first)
       setTransactions(prevTransactions => [newTransaction, ...prevTransactions]);
       setExtractedAmount(null); // Clear the extracted amount after use
       setActiveView('list'); // Switch back to the list view after adding
-      
+
       // Refetch categorized if needed
       if (memoizedActiveView === 'categorized') {
         fetchTransactions(true);
@@ -153,7 +153,7 @@ const Dashboard = () => {
       console.error('Failed to add transaction:', error);
       alert(error.response?.data?.msg || 'Failed to add transaction.');
     }
-  };
+  }, [memoizedActiveView, fetchTransactions]);
 
   // Handler for when a receipt amount is extracted
   const handleAmountExtracted = useCallback((amount) => {
@@ -166,13 +166,13 @@ const Dashboard = () => {
     // Add the new transaction to the list
     setTransactions(prev => [transaction, ...prev]);
     setActiveView('list');
-    
+
     // Refetch categorized transactions if needed
     if (memoizedActiveView === 'categorized') {
       fetchTransactions(true, selectedMonth, selectedYear);
     }
   }, [memoizedActiveView, selectedMonth, selectedYear, fetchTransactions]);
-  
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -182,19 +182,19 @@ const Dashboard = () => {
       }
     };
   }, [overspendingAlert]);
-  
+
   const renderActiveView = useCallback(() => {
     if (loading && (memoizedActiveView === 'list' || memoizedActiveView === 'categorized')) {
       return <div className="loading-container">Loading...</div>;
     }
-    
+
     switch (memoizedActiveView) {
       case 'add':
         return (
           <>
             {overspendingAlert && (
-              <div 
-                className="card" 
+              <div
+                className="card"
                 style={{
                   marginBottom: '1rem',
                   backgroundColor: '#fff3cd',
@@ -205,11 +205,11 @@ const Dashboard = () => {
                 <h4 style={{ marginTop: 0, color: '#856404' }}>⚠️ Budget Overspending Alert</h4>
                 <p style={{ marginBottom: '0.5rem' }}><strong>{overspendingAlert.message}</strong></p>
                 <p style={{ marginBottom: 0, fontSize: '0.9rem' }}>
-                  Budget Limit: ${overspendingAlert.budgetLimit.toFixed(2)} | 
-                  Spent: ${overspendingAlert.spent.toFixed(2)} | 
+                  Budget Limit: ${overspendingAlert.budgetLimit.toFixed(2)} |
+                  Spent: ${overspendingAlert.spent.toFixed(2)} |
                   Exceeded by: ${overspendingAlert.exceededBy.toFixed(2)}
                 </p>
-                <button 
+                <button
                   onClick={() => setOverspendingAlert(null)}
                   style={{
                     marginTop: '0.5rem',
@@ -225,19 +225,17 @@ const Dashboard = () => {
                 </button>
               </div>
             )}
-            <TransactionForm 
-              onAddTransaction={handleAddTransaction} 
+            <TransactionForm
+              onAddTransaction={handleAddTransaction}
               initialAmount={extractedAmount}
             />
           </>
         );
       case 'list':
-        console.log('Rendering TransactionList with handleDeleteTransaction:', handleDeleteTransaction);
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
       case 'categorized':
-        console.log('Rendering CategorizedTransactionList with handleDeleteTransaction:', handleDeleteTransaction);
-        return <CategorizedTransactionList 
-          categorizedData={categorizedTransactions} 
+        return <CategorizedTransactionList
+          categorizedData={categorizedTransactions}
           onDeleteTransaction={handleDeleteTransaction}
           onMonthYearChange={handleMonthYearChange}
           selectedMonth={selectedMonth}
@@ -256,14 +254,14 @@ const Dashboard = () => {
         return <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} loading={loading} />;
     }
   }, [
-    memoizedActiveView, 
-    transactions, 
-    categorizedTransactions, 
-    extractedAmount, 
-    overspendingAlert, 
-    handleAddTransaction, 
-    handleDeleteTransaction, 
-    loading, 
+    memoizedActiveView,
+    transactions,
+    categorizedTransactions,
+    extractedAmount,
+    overspendingAlert,
+    handleAddTransaction,
+    handleDeleteTransaction,
+    loading,
     handleMonthYearChange,
     handleAmountExtracted,
     handleTransactionAdded,

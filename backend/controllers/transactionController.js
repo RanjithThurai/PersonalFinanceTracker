@@ -9,24 +9,24 @@ exports.getTransactions = async (req, res) => {
     if (req.query.startDate && req.query.endDate) {
       const startDate = new Date(req.query.startDate);
       const endDate = new Date(req.query.endDate);
-      
+
       // Set endDate to end of day for inclusive range
       endDate.setHours(23, 59, 59, 999);
-      
-      queryObj.date = { 
-        $gte: startDate, 
-        $lte: endDate 
+
+      queryObj.date = {
+        $gte: startDate,
+        $lte: endDate
       };
     }
-    
+
     // Check if categorization is requested
     const categorize = req.query.categorize === 'true';
-    
+
     if (categorize) {
       // Return transactions grouped by category
       const transactions = await Transaction.find(queryObj)
         .sort({ date: -1, _id: -1 }); // Sort by date (latest first), then by _id
-      
+
       // Group transactions by category
       const categorized = transactions.reduce((acc, tx) => {
         const category = tx.category || 'Uncategorized';
@@ -48,9 +48,9 @@ exports.getTransactions = async (req, res) => {
         }
         return acc;
       }, {});
-      
+
       // Convert to array and sort by total amount (descending)
-      const categorizedArray = Object.values(categorized).sort((a, b) => 
+      const categorizedArray = Object.values(categorized).sort((a, b) =>
         Math.abs(b.totalAmount) - Math.abs(a.totalAmount)
       );
 
@@ -97,28 +97,28 @@ exports.addTransaction = async (req, res) => {
   try {
     const newTransaction = new Transaction({
       type: req.body.type,
-      amount: req.body.amount,
+      amount: Number(parseFloat(req.body.amount).toFixed(2)),
       category: req.body.category,
       date: req.body.date,
       description: req.body.description || '',
       user: req.user.id,
     });
     const transaction = await newTransaction.save();
-    
+
     // Check for overspending if this is an expense
     let overspendingWarning = null;
     if (transaction.type === 'expense') {
       // Extract month from transaction date (YYYY-MM format)
       const txDate = new Date(transaction.date);
       const month = `${txDate.getFullYear()}-${String(txDate.getMonth() + 1).padStart(2, '0')}`;
-      
+
       // Check overspending for this category and month
       const overspendingCheck = await checkOverspending(
         req.user.id,
         transaction.category,
         month
       );
-      
+
       if (overspendingCheck.overspending) {
         overspendingWarning = {
           message: `Warning: You have exceeded your budget for ${transaction.category} in ${month}`,
@@ -131,23 +131,23 @@ exports.addTransaction = async (req, res) => {
         };
       }
     }
-    
+
     // Return transaction with optional overspending warning
-    const response = { 
+    const response = {
       ...transaction.toObject(),
-      overspendingWarning 
+      overspendingWarning
     };
-    
+
     res.json(response);
   } catch (err) {
     console.error('Add Transaction Error:', err.message);
-    
+
     // Handle validation errors
     if (err.name === 'ValidationError') {
       const errors = Object.values(err.errors).map(e => e.message);
       return res.status(400).json({ msg: 'Validation error', errors });
     }
-    
+
     res.status(500).json({ msg: 'Server Error' });
   }
 };
@@ -164,12 +164,12 @@ exports.deleteTransaction = async (req, res) => {
     if (!transaction) {
       return res.status(404).json({ msg: 'Transaction not found' });
     }
-    
+
     // Make sure user owns the transaction
     if (transaction.user.toString() !== req.user.id) {
       return res.status(403).json({ msg: 'Not authorized to delete this transaction' });
     }
-    
+
     await transaction.deleteOne();
     res.json({ msg: 'Transaction removed' });
   } catch (err) {

@@ -2,9 +2,6 @@ import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-// Debug: Always log the API URL to help with deployment issues
-console.log('🔗 API Base URL configured:', baseURL);
-console.log('🔗 REACT_APP_API_URL env var:', process.env.REACT_APP_API_URL || 'NOT SET (using default)');
 
 const api = axios.create({
   baseURL: baseURL,
@@ -39,7 +36,7 @@ api.interceptors.response.use(
 export const uploadReceipt = (file) => {
   const formData = new FormData();
   formData.append('receipt', file); // 'receipt' must match the backend field name
-  
+
   return api.post('/upload/receipt', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

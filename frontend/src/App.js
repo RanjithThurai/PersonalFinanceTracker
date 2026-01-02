@@ -25,20 +25,20 @@ function App() {
     setIsAuthenticated(true);
   };
   const handleLogout = () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('token');
     setIsAuthenticated(false);
   };
 
   // --- Effects ---
-  useEffect(()=>{
-    const token=localStorage.getItem('token')
-    if(token){
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
       setIsAuthenticated(true)
     }
-    else{
+    else {
       setIsAuthenticated(false)
     }
-  },[])
+  }, [])
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -48,11 +48,11 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Header 
-          toggleTheme={toggleTheme} 
-          currentTheme={theme} 
+        <Header
+          toggleTheme={toggleTheme}
+          currentTheme={theme}
           isAuthenticated={isAuthenticated}
-          onLogout={handleLogout} 
+          onLogout={handleLogout}
         />
         <main className="container">
           <Routes>
@@ -62,13 +62,13 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
 
             {/* Protected Route */}
-            <Route 
+            <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Routes>
         </main>

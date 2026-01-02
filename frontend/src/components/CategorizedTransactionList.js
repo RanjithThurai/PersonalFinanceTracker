@@ -1,23 +1,20 @@
 import React, { useState, useMemo, memo, useCallback } from 'react';
 
-const CategorizedTransactionList = memo(({ 
-  categorizedData, 
-  onDeleteTransaction, 
-  onMonthYearChange, 
-  selectedMonth, 
-  selectedYear, 
+const CategorizedTransactionList = memo(({
+  categorizedData,
+  onDeleteTransaction,
+  onMonthYearChange,
+  selectedMonth,
+  selectedYear,
   loading,
   viewMode,
   onViewModeChange
 }) => {
-  console.log('CategorizedTransactionList rendering - viewMode:', viewMode);
-  console.log('onDeleteTransaction prop:', onDeleteTransaction);
-  console.log('typeof onDeleteTransaction:', typeof onDeleteTransaction);
 
   // Memoize the months and years arrays
   const { months, years } = useMemo(() => ({
     months: ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'],
+      'July', 'August', 'September', 'October', 'November', 'December'],
     years: Array.from({ length: new Date().getFullYear() - 2019 }, (_, i) => 2020 + i)
   }), []);
 
@@ -35,21 +32,17 @@ const CategorizedTransactionList = memo(({
       onMonthYearChange?.(selectedMonth, newYear);
     }
   }, [viewMode, onMonthYearChange, selectedMonth]);
-  
+
   // Handle view mode change
   const handleViewModeChange = useCallback((mode) => {
-    console.log('Toggle clicked:', mode, 'Current viewMode:', viewMode);
     if (viewMode !== mode) {
-      console.log('About to call onViewModeChange with:', mode);
       onViewModeChange(mode);
-      
+
       if (mode === 'yearly') {
         onMonthYearChange?.(null, selectedYear);
       } else {
         onMonthYearChange?.(selectedMonth, selectedYear);
       }
-    } else {
-      console.log('Mode is the same, not changing');
     }
   }, [viewMode, onViewModeChange, onMonthYearChange, selectedMonth, selectedYear]);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
@@ -74,27 +67,27 @@ const CategorizedTransactionList = memo(({
     try {
       return categorizedData.map(category => {
         const { transactions = [] } = category;
-        
+
         const total = transactions.reduce((sum, tx) => {
           if (!tx) return sum;
           const amount = typeof tx.amount === 'number' ? tx.amount : parseFloat(tx.amount) || 0;
           return tx.type === 'income' ? sum + amount : sum - amount;
         }, 0);
-        
+
         const totalIncome = transactions
           .filter(tx => tx && tx.type === 'income')
           .reduce((sum, tx) => {
             const amount = typeof tx.amount === 'number' ? tx.amount : parseFloat(tx.amount) || 0;
             return sum + amount;
           }, 0);
-          
+
         const totalExpenses = transactions
           .filter(tx => tx && tx.type === 'expense')
           .reduce((sum, tx) => {
             const amount = typeof tx.amount === 'number' ? tx.amount : parseFloat(tx.amount) || 0;
             return sum + amount;
           }, 0);
-        
+
         return {
           ...category,
           total: Number(isNaN(total) ? 0 : total.toFixed(2)),
@@ -112,19 +105,19 @@ const CategorizedTransactionList = memo(({
     try {
       return memoizedCategories.reduce((acc, category) => {
         if (!category) return acc;
-        
-        const income = typeof category.totalIncome === 'number' 
-          ? category.totalIncome 
+
+        const income = typeof category.totalIncome === 'number'
+          ? category.totalIncome
           : parseFloat(category.totalIncome) || 0;
-          
-        const expenses = typeof category.totalExpenses === 'number' 
-          ? category.totalExpenses 
+
+        const expenses = typeof category.totalExpenses === 'number'
+          ? category.totalExpenses
           : parseFloat(category.totalExpenses) || 0;
-          
-        const total = typeof category.total === 'number' 
-          ? category.total 
+
+        const total = typeof category.total === 'number'
+          ? category.total
           : parseFloat(category.total) || 0;
-        
+
         return {
           totalIncome: (acc.totalIncome || 0) + (isNaN(income) ? 0 : income),
           totalExpenses: (acc.totalExpenses || 0) + (isNaN(expenses) ? 0 : expenses),
@@ -143,8 +136,8 @@ const CategorizedTransactionList = memo(({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <h3 style={{ margin: 0 }}>Transactions by Category</h3>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <select 
-              value={selectedMonth} 
+            <select
+              value={selectedMonth}
               onChange={handleMonthChange}
               style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             >
@@ -154,8 +147,8 @@ const CategorizedTransactionList = memo(({
                 </option>
               ))}
             </select>
-            <select 
-              value={selectedYear} 
+            <select
+              value={selectedYear}
               onChange={handleYearChange}
               style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             >
@@ -173,25 +166,24 @@ const CategorizedTransactionList = memo(({
   }
 
   const renderMonthYearSelectors = () => {
-    console.log('renderMonthYearSelectors called - viewMode:', viewMode);
     return (
-    <div style={{ marginBottom: '1.5rem' }}>
+      <div style={{ marginBottom: '1.5rem' }}>
         {/* Header with title and view toggle */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           marginBottom: '1rem',
           flexWrap: 'wrap',
           gap: '1rem'
         }}>
           <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#333' }}>Transactions by Category</h3>
-          
-          <div style={{ 
-            display: 'flex', 
-            gap: '0.5rem', 
-            backgroundColor: '#f0f0f0', 
-            padding: '0.25rem', 
+
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            backgroundColor: '#f0f0f0',
+            padding: '0.25rem',
             borderRadius: '6px',
             boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
           }}>
@@ -229,12 +221,12 @@ const CategorizedTransactionList = memo(({
             </button>
           </div>
         </div>
-        
+
         {/* Date selectors row */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          alignItems: 'center', 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
           gap: '1rem',
           flexWrap: 'wrap'
         }}>
@@ -242,12 +234,12 @@ const CategorizedTransactionList = memo(({
           {viewMode === 'monthly' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.9rem', color: '#666', fontWeight: '500' }}>Month:</label>
-              <select 
-                value={selectedMonth} 
+              <select
+                value={selectedMonth}
                 onChange={handleMonthChange}
-                style={{ 
-                  padding: '0.5rem', 
-                  borderRadius: '6px', 
+                style={{
+                  padding: '0.5rem',
+                  borderRadius: '6px',
                   border: '1px solid #ddd',
                   backgroundColor: '#fff',
                   fontSize: '0.9rem',
@@ -263,16 +255,16 @@ const CategorizedTransactionList = memo(({
               </select>
             </div>
           )}
-          
+
           {/* Year selector - ALWAYS shown */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <label style={{ fontSize: '0.9rem', color: '#666', fontWeight: '500' }}>Year:</label>
-            <select 
-              value={selectedYear} 
+            <select
+              value={selectedYear}
               onChange={handleYearChange}
-              style={{ 
-                padding: '0.5rem', 
-                borderRadius: '6px', 
+              style={{
+                padding: '0.5rem',
+                borderRadius: '6px',
                 border: '1px solid #ddd',
                 backgroundColor: '#fff',
                 fontSize: '0.9rem',
@@ -293,10 +285,10 @@ const CategorizedTransactionList = memo(({
   };
 
   if (!memoizedCategories || memoizedCategories.length === 0) {
-    const periodText = viewMode === 'monthly' 
+    const periodText = viewMode === 'monthly'
       ? `${months[selectedMonth - 1]} ${selectedYear}`
       : `${selectedYear}`;
-    
+
     return (
       <div className="card">
         {renderMonthYearSelectors()}
@@ -404,11 +396,11 @@ const CategorizedTransactionList = memo(({
                   <span style={{ textAlign: 'right' }}>Type</span>
                   <span style={{ textAlign: 'right' }}>Amount</span>
                 </div>
-                
+
                 {/* Transactions */}
                 <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                   {category.transactions.map((tx) => (
-                    <div 
+                    <div
                       key={tx._id}
                       style={{
                         display: 'grid',
@@ -427,7 +419,7 @@ const CategorizedTransactionList = memo(({
                       <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary-color)' }}>
                         {new Date(tx.date).toLocaleDateString()}
                       </span>
-                      <span style={{ 
+                      <span style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
@@ -456,7 +448,7 @@ const CategorizedTransactionList = memo(({
                         }}>
                           {tx.type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
                         </span>
-                        <button 
+                        <button
                           onClick={() => onDeleteTransaction(tx._id)}
                           style={{
                             background: 'none',
