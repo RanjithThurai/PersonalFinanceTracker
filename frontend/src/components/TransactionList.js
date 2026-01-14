@@ -73,26 +73,25 @@ const TransactionList = ({ transactions, onDelete }) => {
       {/* --- NEW: Table Header --- */}
       <div className="list-header">
         <span className="header-date">Date</span>
-        <span className="header-details">Description</span>
+        <span className="header-category">Category</span>
+        <span className="header-description">Description</span>
         <span className="header-amount">Amount</span>
       </div>
 
       <ul>
         {filteredTransactions.length > 0 ? (
           filteredTransactions.map(tx => {
-            const { description, category } = tx;
-            let displayText = description || category;
-            if (description && category && description !== category) {
-              displayText = `${description} (${category})`;
-            }
-
             return (
-              // --- MODIFIED: List item with a new column structure ---
+              // --- MODIFIED: List item with separate category and description columns ---
               <li key={tx._id} className={tx.type}>
                 <span className="date-column">{formatDate(tx.date)}</span>
 
-                <div className="details-column">
-                  <span className="description">{displayText}</span>
+                <div className="category-column">
+                  <span className="category">{tx.category || '-'}</span>
+                </div>
+
+                <div className="description-column">
+                  <span className="description">{tx.description || '-'}</span>
                 </div>
 
                 <div className="amount-container">

@@ -383,7 +383,7 @@ const CategorizedTransactionList = memo(({
                 {/* Table Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '120px 1fr 120px 100px',
+                  gridTemplateColumns: '120px 150px 1fr 120px 100px',
                   padding: '0.75rem 1rem',
                   backgroundColor: 'var(--bg-color)',
                   borderBottom: '1px solid var(--border-color)',
@@ -392,6 +392,7 @@ const CategorizedTransactionList = memo(({
                   color: 'var(--text-secondary-color)'
                 }}>
                   <span>Date</span>
+                  <span>Category</span>
                   <span>Description</span>
                   <span style={{ textAlign: 'right' }}>Type</span>
                   <span style={{ textAlign: 'right' }}>Amount</span>
@@ -404,7 +405,7 @@ const CategorizedTransactionList = memo(({
                       key={tx._id}
                       style={{
                         display: 'grid',
-                        gridTemplateColumns: '120px 1fr 120px 100px',
+                        gridTemplateColumns: '120px 150px 1fr 120px 100px',
                         padding: '0.75rem 1rem',
                         borderBottom: '1px solid var(--border-color)',
                         alignItems: 'center',
@@ -423,9 +424,19 @@ const CategorizedTransactionList = memo(({
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        paddingRight: '1rem'
+                        paddingRight: '0.5rem',
+                        fontWeight: '500'
                       }}>
-                        {tx.description}
+                        {tx.category || '-'}
+                      </span>
+                      <span style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        paddingRight: '1rem',
+                        color: 'var(--text-secondary-color)'
+                      }}>
+                        {tx.description || '-'}
                       </span>
                       <span style={{
                         textAlign: 'right',

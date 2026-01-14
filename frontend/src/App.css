@@ -9,7 +9,7 @@
   --input-border-color: #ccc;
   --btn-bg-color: #3498db;
   --btn-text-color: white;
-  --shadow-color: rgba(0,0,0,0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
   --nav-btn-bg: #f9f9f9;
   --nav-btn-active-bg: #3498db;
   --nav-btn-text: #34495e;
@@ -28,7 +28,7 @@ body.dark {
   --input-border-color: #444444;
   --btn-bg-color: #55aaff;
   --btn-text-color: #121212;
-  --shadow-color: rgba(0,0,0,0.4);
+  --shadow-color: rgba(0, 0, 0, 0.4);
   --nav-btn-bg: #2c2c2c;
   --nav-btn-active-bg: #55aaff;
   --nav-btn-text: #f1f1f1;
@@ -48,7 +48,8 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling */
   width: 100%;
   box-sizing: border-box;
 }
@@ -93,7 +94,8 @@ body {
 }
 
 .header nav {
-  display: none; /* Hidden on mobile, shown via hamburger */
+  display: none;
+  /* Hidden on mobile, shown via hamburger */
 }
 
 .header nav.active {
@@ -122,7 +124,8 @@ body {
   text-align: center;
   border-radius: 4px;
   transition: background-color 0.2s ease;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,7 +149,8 @@ body {
   align-items: center;
   gap: 4px;
   padding: 0;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
 }
 
 .hamburger-btn span {
@@ -181,7 +185,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   flex-shrink: 0;
 }
 
@@ -194,7 +199,8 @@ body {
   font-family: inherit;
   cursor: pointer;
   padding: 0;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
 }
 
 /* 4. General Components (Cards, Forms, Buttons) - Mobile First */
@@ -219,7 +225,8 @@ body {
   font-weight: bold;
   color: var(--nav-btn-text);
   transition: all 0.3s ease;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -244,7 +251,8 @@ body {
   box-shadow: 0 4px 6px var(--shadow-color);
   margin-bottom: 1.5rem;
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal overflow */
+  overflow-x: hidden;
+  /* Prevent horizontal overflow */
 }
 
 .form-group {
@@ -268,7 +276,8 @@ body {
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1rem;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
 }
 
 .form-group input[type="file"] {
@@ -287,7 +296,8 @@ body {
   text-decoration: none;
   display: inline-block;
   transition: background-color 0.3s ease;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   width: 100%;
   text-align: center;
   font-weight: bold;
@@ -357,7 +367,8 @@ body {
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   flex: 1;
   min-width: 80px;
 }
@@ -415,7 +426,8 @@ body {
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
-  min-height: 44px; /* Touch-friendly */
+  min-height: 44px;
+  /* Touch-friendly */
   min-width: 44px;
   font-size: 1rem;
   font-weight: bold;
@@ -423,7 +435,8 @@ body {
 
 /* Transaction List Table Layout - Mobile: Stacked, Desktop: Table */
 .list-header {
-  display: none; /* Hidden on mobile */
+  display: none;
+  /* Hidden on mobile */
 }
 
 .transaction-list li {
@@ -443,9 +456,15 @@ body {
   font-size: 0.9rem;
 }
 
-.details-column {
+.category-column {
   text-align: left;
   font-weight: 500;
+}
+
+.description-column {
+  text-align: left;
+  color: var(--text-secondary-color);
+  font-size: 0.95rem;
 }
 
 .amount-container {
@@ -503,6 +522,7 @@ body {
 }
 
 @media (min-width: 481px) {
+
   .login-card,
   .signup-card {
     max-width: 500px;
@@ -585,7 +605,8 @@ body {
   }
 
   .hamburger-btn {
-    display: none; /* Hide hamburger on desktop */
+    display: none;
+    /* Hide hamburger on desktop */
   }
 
   .header nav {
@@ -651,7 +672,11 @@ body {
     flex: 0 0 150px;
   }
 
-  .header-details {
+  .header-category {
+    flex: 0 0 150px;
+  }
+
+  .header-description {
     flex-grow: 1;
   }
 
@@ -673,7 +698,12 @@ body {
     flex: 0 0 150px;
   }
 
-  .details-column {
+  .category-column {
+    flex: 0 0 150px;
+    margin: 0 1rem;
+  }
+
+  .description-column {
     flex-grow: 1;
     margin: 0 1rem;
   }
@@ -706,7 +736,8 @@ body {
 }
 
 /* Prevent horizontal scrolling on all screen sizes */
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100%;
 }
